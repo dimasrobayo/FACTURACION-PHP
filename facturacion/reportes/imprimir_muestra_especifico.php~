@@ -1,0 +1,65 @@
+<?php
+define('FPDF_FONTPATH','font/');
+require('pg_table.php');
+include("comunes.php");
+include ("conectar.php");
+$fecha_desde = $_POST['fecha_desde'];
+$fecha_hasta = $_POST['fecha_hasta'];
+
+if (($fecha_desde) || ($fecha_hasta))
+{
+	$string_con = ("select * from muestra where fecha_recoleccion >= '$fecha_desde' and fecha_recoleccion <= '$fecha_hasta'");
+
+	$cons=pg_query($string_con) or die("error en la linea 42".pg_error());
+
+	$query = pg_query($string_con);
+}
+
+$pdf=new PDF('L','mm',Legal);
+$pdf->Open();
+$pdf->AddPage();
+
+$pdf->SetFillColor(255,255,255);
+$pdf->SetFont('Arial','B',14);
+$pdf->SetY(50);
+$pdf->SetX(0);
+$pdf->MultiCell(220,6,"Reporte de Muestras por Fecha",0,C,0);//
+
+$pdf->Ln();
+
+//T�tulos de las columnas
+$header=array('Cod','Descripcion','Nombre Bulgar','Cordenadas','N de Parte','Fecha de Recoleccion');
+
+//Colores, ancho de l�nea y fuente en negrita
+    $pdf->SetFillColor(200,200,200);
+    $pdf->SetTextColor(0);
+    $pdf->SetDrawColor(0,0,0);
+    $pdf->SetLineWidth(.2);
+    $pdf->SetFont('Arial','B',10);
+	
+//Cabecera
+    $w=array(10,80,50,40,40,50);
+    for($i=0;$i<count($header);$i++)
+        $pdf->Cell($w[$i],7,$header[$i],1,0,'C',1);
+    $pdf->Ln();
+	
+//Restauraci�n de colores y fuentes
+
+    $pdf->SetFillColor(224,235,255);
+    $pdf->SetTextColor(0);
+    $pdf->SetFont('Arial','B',7);
+
+while ($row = pg_fetch_array($query))
+        {
+		//posicion celda, alto,contenido,bordes que mostramos(left,right top botton),0, alineacion izquierda
+		//imprimo nombre, apellidos y localidad
+		$pdf->Cell($w[0],5,$row["cod_herbario"],'LRTB',0,'C');
+		$pdf->Cell($w[1],5,$row["des_muestra"],'LRTB',0,'L');
+		$pdf->Cell($w[2],5,$row["nombre_bulgar"],'LRTB',0,'L');
+		$pdf->Cell($w[3],5,$row["cordenadas"],'LRTB',0,'L');
+		$pdf->Cell($w[4],5,$row["n_parte"],'LRTB',0,'L');
+		$pdf->Cell($w[5],5,$row["fecha_recoleccion"],'LRTB',0,'L');
+		$pdf->Ln(); //Este es para alinear los campos de la base de datos en el pdf.
+        };
+$pdf->Output();
+?> 

@@ -1,0 +1,2965 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: drop_categoria(integer); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION drop_categoria(integer) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE
+   variable_datos categorias%ROWTYPE;
+
+BEGIN 
+   SELECT INTO variable_datos cod_categoria FROM categorias WHERE cod_categoria=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+
+      DELETE FROM categorias Where cod_categoria=$1;
+      RETURN 1;    
+
+   END IF;  	
+
+end$_$;
+
+
+ALTER FUNCTION public.drop_categoria(integer) OWNER TO alcides;
+
+--
+-- Name: drop_comunidad(integer); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION drop_comunidad(integer) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE
+   variable_datos comunidades%ROWTYPE;
+
+BEGIN 
+   SELECT INTO variable_datos idcomunidad FROM comunidades WHERE idcomunidad=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+
+      DELETE FROM comunidades Where idcomunidad=$1;
+      RETURN 1;    
+
+   END IF;  	
+
+end$_$;
+
+
+ALTER FUNCTION public.drop_comunidad(integer) OWNER TO alcides;
+
+--
+-- Name: drop_parroquia(integer); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION drop_parroquia(integer) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE
+   variable_datos parroquias%ROWTYPE;
+
+BEGIN 
+   SELECT INTO variable_datos idpar FROM parroquias WHERE idpar=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+
+      DELETE FROM parroquias Where idpar=$1;
+      RETURN 1;    
+
+   END IF;  	
+
+end$_$;
+
+
+ALTER FUNCTION public.drop_parroquia(integer) OWNER TO alcides;
+
+--
+-- Name: drop_prioridad(integer); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION drop_prioridad(integer) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE
+   variable_datos prioridades%ROWTYPE;
+
+BEGIN 
+   SELECT INTO variable_datos cod_prioridad FROM prioridades WHERE cod_prioridad=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+
+      DELETE FROM prioridades Where cod_prioridad=$1;
+      RETURN 1;    
+
+   END IF;  	
+
+end$_$;
+
+
+ALTER FUNCTION public.drop_prioridad(integer) OWNER TO alcides;
+
+--
+-- Name: drop_tipo_solicitante(integer); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION drop_tipo_solicitante(integer) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE
+   variable_datos tipo_solicitantes%ROWTYPE;
+
+BEGIN 
+   SELECT INTO variable_datos cod_tipo_solicitante FROM tipo_solicitantes WHERE cod_tipo_solicitante=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+
+      DELETE FROM tipo_solicitantes Where cod_tipo_solicitante=$1;
+      RETURN 1;    
+
+   END IF;  	
+
+end$_$;
+
+
+ALTER FUNCTION public.drop_tipo_solicitante(integer) OWNER TO alcides;
+
+--
+-- Name: drop_unidad(integer); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION drop_unidad(integer) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE
+   variable_datos unidades%ROWTYPE;
+
+BEGIN 
+   SELECT INTO variable_datos cod_unidad FROM unidades WHERE cod_unidad=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+
+      DELETE FROM unidades Where cod_unidad=$1;
+      RETURN 1;    
+
+   END IF;  	
+
+end$_$;
+
+
+ALTER FUNCTION public.drop_unidad(integer) OWNER TO alcides;
+
+--
+-- Name: drop_usuario(integer); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION drop_usuario(integer) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE
+
+   variable_datos usuarios%ROWTYPE;
+
+BEGIN 
+
+   SELECT INTO variable_datos cedula FROM usuarios WHERE cedula=$1;
+
+   IF NOT FOUND THEN
+
+     RETURN 0;
+
+   ELSE
+
+      DELETE FROM usuarios Where cedula=$1;
+
+      RETURN 1;    
+
+   END IF;  	
+
+end$_$;
+
+
+ALTER FUNCTION public.drop_usuario(integer) OWNER TO alcides;
+
+--
+-- Name: insert_usuario(integer, character varying, character varying, character varying, character varying, integer, integer); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION insert_usuario(integer, character varying, character varying, character varying, character varying, integer, integer) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE
+
+     datos usuarios%ROWTYPE;
+
+BEGIN 
+
+   SELECT INTO datos cedula FROM usuarios WHERE cedula=$1;
+
+   IF NOT FOUND THEN
+
+     INSERT INTO usuarios values($1,$2,$3,$4,$5,$6,$7); 
+
+     RETURN 1;
+
+   ELSE     
+
+      RETURN 0;    
+
+   END IF;  	
+
+end
+
+$_$;
+
+
+ALTER FUNCTION public.insert_usuario(integer, character varying, character varying, character varying, character varying, integer, integer) OWNER TO alcides;
+
+--
+-- Name: unlock_usuario(integer, integer); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION unlock_usuario(integer, integer) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE
+
+   variable_datos usuarios%ROWTYPE;
+
+BEGIN 
+
+   SELECT INTO variable_datos cedula FROM usuarios WHERE cedula=$1;
+
+   IF NOT FOUND THEN
+
+     RETURN 0;
+
+   ELSE
+
+      UPDATE usuarios SET status=$2 WHERE cedula=$1;
+
+      RETURN 1;    
+
+   END IF;  	
+
+end$_$;
+
+
+ALTER FUNCTION public.unlock_usuario(integer, integer) OWNER TO alcides;
+
+--
+-- Name: update_categoria(integer, character varying); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION update_categoria(integer, character varying) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE  
+
+   datos categorias%ROWTYPE; 
+
+BEGIN 
+
+  SELECT INTO datos cod_categoria FROM categorias WHERE cod_categoria=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+      UPDATE categorias SET descripcion_categoria=$2 WHERE cod_categoria=$1;
+      RETURN 1;    
+
+   END IF;  	
+end$_$;
+
+
+ALTER FUNCTION public.update_categoria(integer, character varying) OWNER TO alcides;
+
+--
+-- Name: update_comunidad(integer, character varying); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION update_comunidad(integer, character varying) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE  
+
+   datos comunidades%ROWTYPE; 
+
+BEGIN 
+
+  SELECT INTO datos idcomunidad FROM comunidades WHERE idcomunidad=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+      UPDATE comunidades SET descomun=$2 WHERE idcomunidad=$1;
+      RETURN 1;    
+
+   END IF;  	
+end$_$;
+
+
+ALTER FUNCTION public.update_comunidad(integer, character varying) OWNER TO alcides;
+
+--
+-- Name: update_parroquia(integer, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION update_parroquia(integer, character varying, character varying, character varying, character varying) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE  
+
+   datos parroquias%ROWTYPE; 
+
+BEGIN 
+
+  SELECT INTO datos idpar FROM parroquias WHERE idpar=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+      UPDATE parroquias SET codest=$2,codmun=$3,codpar=$4,despar=$5 WHERE idpar=$1;
+      RETURN 1;    
+
+   END IF;  	
+end$_$;
+
+
+ALTER FUNCTION public.update_parroquia(integer, character varying, character varying, character varying, character varying) OWNER TO alcides;
+
+--
+-- Name: update_prioridad(integer, character varying); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION update_prioridad(integer, character varying) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE  
+
+   datos prioridades%ROWTYPE; 
+
+BEGIN 
+
+  SELECT INTO datos cod_prioridad FROM prioridades WHERE cod_prioridad=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+      UPDATE prioridades SET descripcion_prioridad=$2 WHERE cod_prioridad=$1;
+      RETURN 1;    
+
+   END IF;  	
+end$_$;
+
+
+ALTER FUNCTION public.update_prioridad(integer, character varying) OWNER TO alcides;
+
+--
+-- Name: update_tipo_solicitante(integer, character varying); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION update_tipo_solicitante(integer, character varying) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE  
+
+   datos tipo_solicitantes%ROWTYPE; 
+
+BEGIN 
+
+  SELECT INTO datos cod_tipo_solicitante FROM tipo_solicitantes WHERE cod_tipo_solicitante=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+      UPDATE tipo_solicitantes SET descripcion_tipo_solicitante=$2 WHERE cod_tipo_solicitante=$1;
+      RETURN 1;    
+
+   END IF;  	
+end$_$;
+
+
+ALTER FUNCTION public.update_tipo_solicitante(integer, character varying) OWNER TO alcides;
+
+--
+-- Name: update_unidad(integer, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION update_unidad(integer, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE  
+
+   datos unidades%ROWTYPE; 
+
+BEGIN 
+
+  SELECT INTO datos cod_unidad FROM unidades WHERE cod_unidad=$1;
+
+   IF NOT FOUND THEN
+     RETURN 0;
+
+   ELSE
+      UPDATE unidades SET siglas_unidad=$2,nombre_unidad=$3,responsable_unidad=$4,cargo_responsable=$5,direccion_unidad=$6,telefono_1=$7,telefono_2=$8,email_unidad=$9,horario_unidad=$10 WHERE cod_unidad=$1;
+      RETURN 1;    
+
+   END IF;  	
+end$_$;
+
+
+ALTER FUNCTION public.update_unidad(integer, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying) OWNER TO alcides;
+
+--
+-- Name: update_usuario(integer, character varying, character varying, character varying, character varying, integer, integer, date, time without time zone); Type: FUNCTION; Schema: public; Owner: alcides
+--
+
+CREATE FUNCTION update_usuario(integer, character varying, character varying, character varying, character varying, integer, integer, date, time without time zone) RETURNS smallint
+    LANGUAGE plpgsql
+    AS $_$DECLARE  
+
+   datos usuarios%ROWTYPE; 
+
+BEGIN 
+
+  SELECT INTO datos cedula FROM usuarios WHERE cedula=$1;
+
+   IF NOT FOUND THEN
+
+     RETURN 0;
+
+   ELSE
+
+      UPDATE usuarios SET nombre_usuario=$2, apellido_usuario=$3, usuario=$4, pass=$5, nivel_acceso=$6, status=$7, fecha_registro=$8, hora_registro=$9 WHERE cedula=$1;
+
+      RETURN 1;    
+
+   END IF;  	
+
+end$_$;
+
+
+ALTER FUNCTION public.update_usuario(integer, character varying, character varying, character varying, character varying, integer, integer, date, time without time zone) OWNER TO alcides;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: categorias; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE categorias (
+    cod_categoria integer NOT NULL,
+    descripcion_categoria character varying(100)
+);
+
+
+ALTER TABLE public.categorias OWNER TO alcides;
+
+--
+-- Name: categoria_cod_categoria_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE categoria_cod_categoria_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.categoria_cod_categoria_seq OWNER TO alcides;
+
+--
+-- Name: categoria_cod_categoria_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE categoria_cod_categoria_seq OWNED BY categorias.cod_categoria;
+
+
+--
+-- Name: comunidades; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE comunidades (
+    idcomunidad integer NOT NULL,
+    codest character varying(5) NOT NULL,
+    codmun character varying(5) NOT NULL,
+    codpar character varying(5) NOT NULL,
+    descomun character varying(100)
+);
+
+
+ALTER TABLE public.comunidades OWNER TO alcides;
+
+--
+-- Name: comunidades_idcomunidad_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE comunidades_idcomunidad_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.comunidades_idcomunidad_seq OWNER TO alcides;
+
+--
+-- Name: comunidades_idcomunidad_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE comunidades_idcomunidad_seq OWNED BY comunidades.idcomunidad;
+
+
+--
+-- Name: estados; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE estados (
+    idest integer NOT NULL,
+    codest character varying(5) NOT NULL,
+    desest character varying(100)
+);
+
+
+ALTER TABLE public.estados OWNER TO alcides;
+
+--
+-- Name: estados_idest_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE estados_idest_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.estados_idest_seq OWNER TO alcides;
+
+--
+-- Name: estados_idest_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE estados_idest_seq OWNED BY estados.idest;
+
+
+--
+-- Name: estados_tramites; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE estados_tramites (
+    cod_estado_tramite integer NOT NULL,
+    abrevia_estado_tramite character varying(3),
+    descripcion_estado_tramite character varying(100)
+);
+
+
+ALTER TABLE public.estados_tramites OWNER TO alcides;
+
+--
+-- Name: estados_tramite_cod_estado_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE estados_tramite_cod_estado_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.estados_tramite_cod_estado_seq OWNER TO alcides;
+
+--
+-- Name: estados_tramite_cod_estado_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE estados_tramite_cod_estado_seq OWNED BY estados_tramites.cod_estado_tramite;
+
+
+--
+-- Name: municipios; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE municipios (
+    idmun integer NOT NULL,
+    codest character varying(5) NOT NULL,
+    codmun character varying(5) NOT NULL,
+    desmun character varying(100)
+);
+
+
+ALTER TABLE public.municipios OWNER TO alcides;
+
+--
+-- Name: municipios_idmun_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE municipios_idmun_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.municipios_idmun_seq OWNER TO alcides;
+
+--
+-- Name: municipios_idmun_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE municipios_idmun_seq OWNED BY municipios.idmun;
+
+
+--
+-- Name: parroquias; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE parroquias (
+    idpar integer NOT NULL,
+    codest character varying(5) NOT NULL,
+    codmun character varying(5) NOT NULL,
+    codpar character varying(5) NOT NULL,
+    despar character varying(100)
+);
+
+
+ALTER TABLE public.parroquias OWNER TO alcides;
+
+--
+-- Name: parroquias_idpar_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE parroquias_idpar_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.parroquias_idpar_seq OWNER TO alcides;
+
+--
+-- Name: parroquias_idpar_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE parroquias_idpar_seq OWNED BY parroquias.idpar;
+
+
+--
+-- Name: prioridades; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE prioridades (
+    cod_prioridad integer NOT NULL,
+    descripcion_prioridad character varying(100)
+);
+
+
+ALTER TABLE public.prioridades OWNER TO alcides;
+
+--
+-- Name: prioridad_cod_prioridad_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE prioridad_cod_prioridad_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.prioridad_cod_prioridad_seq OWNER TO alcides;
+
+--
+-- Name: prioridad_cod_prioridad_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE prioridad_cod_prioridad_seq OWNED BY prioridades.cod_prioridad;
+
+
+--
+-- Name: solicitantes; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE solicitantes (
+    cedula_rif character varying(12) NOT NULL,
+    cod_tipo_solicitante integer,
+    nombre_solicitante character varying(50),
+    sexo_solicitante character varying(1),
+    fecha_nac date,
+    direccion_habitacion text,
+    telefono_fijo character varying(15),
+    telefono_movil character varying(15),
+    email character varying(50)
+);
+
+
+ALTER TABLE public.solicitantes OWNER TO alcides;
+
+--
+-- Name: ticket; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE ticket (
+    cod_ticket integer NOT NULL,
+    cedula_rif character varying(12),
+    cod_comunidad integer,
+    cod_prioridad integer,
+    cod_estado integer,
+    cod_tramite_unidad integer,
+    descripcion_tiket text,
+    fecha_registro date,
+    monto_solicitud double precision,
+    persona_contacto_dep character varying(100)
+);
+
+
+ALTER TABLE public.ticket OWNER TO alcides;
+
+--
+-- Name: ticket_cod_ticket_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE ticket_cod_ticket_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.ticket_cod_ticket_seq OWNER TO alcides;
+
+--
+-- Name: ticket_cod_ticket_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE ticket_cod_ticket_seq OWNED BY ticket.cod_ticket;
+
+
+--
+-- Name: tipo_solicitantes; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE tipo_solicitantes (
+    cod_tipo_solicitante integer NOT NULL,
+    descripcion_tipo_solicitante character varying(100)
+);
+
+
+ALTER TABLE public.tipo_solicitantes OWNER TO alcides;
+
+--
+-- Name: tipo_solicitante_cod_tipo_solicitante_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE tipo_solicitante_cod_tipo_solicitante_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tipo_solicitante_cod_tipo_solicitante_seq OWNER TO alcides;
+
+--
+-- Name: tipo_solicitante_cod_tipo_solicitante_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE tipo_solicitante_cod_tipo_solicitante_seq OWNED BY tipo_solicitantes.cod_tipo_solicitante;
+
+
+--
+-- Name: tramite; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE tramite (
+    cod_tramite integer NOT NULL,
+    cod_categoria integer,
+    nombre_tramite character varying(100),
+    descripcion_tramite text
+);
+
+
+ALTER TABLE public.tramite OWNER TO alcides;
+
+--
+-- Name: tramite_cod_tramite_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE tramite_cod_tramite_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tramite_cod_tramite_seq OWNER TO alcides;
+
+--
+-- Name: tramite_cod_tramite_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE tramite_cod_tramite_seq OWNED BY tramite.cod_tramite;
+
+
+--
+-- Name: tramite_unidad; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE tramite_unidad (
+    cod_tramite_unidad integer NOT NULL,
+    cod_unidad integer,
+    cod_tramite integer
+);
+
+
+ALTER TABLE public.tramite_unidad OWNER TO alcides;
+
+--
+-- Name: tramite_unidad_cod_tramite_unidad_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE tramite_unidad_cod_tramite_unidad_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tramite_unidad_cod_tramite_unidad_seq OWNER TO alcides;
+
+--
+-- Name: tramite_unidad_cod_tramite_unidad_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE tramite_unidad_cod_tramite_unidad_seq OWNED BY tramite_unidad.cod_tramite_unidad;
+
+
+--
+-- Name: unidades; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE unidades (
+    cod_unidad integer NOT NULL,
+    siglas_unidad character varying(50),
+    nombre_unidad character varying(50),
+    responsable_unidad character varying(50),
+    cargo_responsable character varying(50),
+    direccion_unidad character varying(100),
+    telefono_1 character varying(15),
+    telefono_2 character varying(15),
+    email_unidad character varying(50),
+    horario_unidad character varying(50)
+);
+
+
+ALTER TABLE public.unidades OWNER TO alcides;
+
+--
+-- Name: unidades_cod_unidad_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE unidades_cod_unidad_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.unidades_cod_unidad_seq OWNER TO alcides;
+
+--
+-- Name: unidades_cod_unidad_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alcides
+--
+
+ALTER SEQUENCE unidades_cod_unidad_seq OWNED BY unidades.cod_unidad;
+
+
+--
+-- Name: usuarios; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE usuarios (
+    cedula integer NOT NULL,
+    nombre_usuario character varying(60) NOT NULL,
+    apellido_usuario character varying(60) NOT NULL,
+    usuario character varying(50) NOT NULL,
+    pass character varying(50) NOT NULL,
+    nivel_acceso integer NOT NULL,
+    status integer NOT NULL,
+    fecha_registro date DEFAULT now() NOT NULL,
+    hora_registro time without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.usuarios OWNER TO alcides;
+
+--
+-- Name: visitcounter_id_seq; Type: SEQUENCE; Schema: public; Owner: alcides
+--
+
+CREATE SEQUENCE visitcounter_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.visitcounter_id_seq OWNER TO alcides;
+
+--
+-- Name: visitcounter; Type: TABLE; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE TABLE visitcounter (
+    id integer DEFAULT nextval('visitcounter_id_seq'::regclass) NOT NULL,
+    tm integer NOT NULL,
+    ip character varying(16) NOT NULL
+);
+
+
+ALTER TABLE public.visitcounter OWNER TO alcides;
+
+--
+-- Name: cod_categoria; Type: DEFAULT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY categorias ALTER COLUMN cod_categoria SET DEFAULT nextval('categoria_cod_categoria_seq'::regclass);
+
+
+--
+-- Name: idcomunidad; Type: DEFAULT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY comunidades ALTER COLUMN idcomunidad SET DEFAULT nextval('comunidades_idcomunidad_seq'::regclass);
+
+
+--
+-- Name: cod_estado_tramite; Type: DEFAULT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY estados_tramites ALTER COLUMN cod_estado_tramite SET DEFAULT nextval('estados_tramite_cod_estado_seq'::regclass);
+
+
+--
+-- Name: cod_prioridad; Type: DEFAULT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY prioridades ALTER COLUMN cod_prioridad SET DEFAULT nextval('prioridad_cod_prioridad_seq'::regclass);
+
+
+--
+-- Name: cod_ticket; Type: DEFAULT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY ticket ALTER COLUMN cod_ticket SET DEFAULT nextval('ticket_cod_ticket_seq'::regclass);
+
+
+--
+-- Name: cod_tipo_solicitante; Type: DEFAULT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY tipo_solicitantes ALTER COLUMN cod_tipo_solicitante SET DEFAULT nextval('tipo_solicitante_cod_tipo_solicitante_seq'::regclass);
+
+
+--
+-- Name: cod_tramite; Type: DEFAULT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY tramite ALTER COLUMN cod_tramite SET DEFAULT nextval('tramite_cod_tramite_seq'::regclass);
+
+
+--
+-- Name: cod_tramite_unidad; Type: DEFAULT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY tramite_unidad ALTER COLUMN cod_tramite_unidad SET DEFAULT nextval('tramite_unidad_cod_tramite_unidad_seq'::regclass);
+
+
+--
+-- Name: cod_unidad; Type: DEFAULT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY unidades ALTER COLUMN cod_unidad SET DEFAULT nextval('unidades_cod_unidad_seq'::regclass);
+
+
+--
+-- Name: categoria_cod_categoria_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('categoria_cod_categoria_seq', 3, true);
+
+
+--
+-- Data for Name: categorias; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY categorias (cod_categoria, descripcion_categoria) FROM stdin;
+3	Telefonía
+\.
+
+
+--
+-- Data for Name: comunidades; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY comunidades (idcomunidad, codest, codmun, codpar, descomun) FROM stdin;
+5	018	010	002	SAN NICOLAS
+\.
+
+
+--
+-- Name: comunidades_idcomunidad_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('comunidades_idcomunidad_seq', 5, true);
+
+
+--
+-- Data for Name: estados; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY estados (idest, codest, desest) FROM stdin;
+1	001	DISTRITO CAPITAL
+2	002	AMAZONAS
+3	003	ANZOÁTEGUI
+4	004	APURE
+5	005	ARAGUA
+6	006	BARINAS
+7	007	BOLIVAR
+8	008	CARABOBO
+9	009	COJEDES
+10	010	DELTA AMACURO
+11	011	FALCON
+12	012	GUARICO
+13	013	LARA
+14	014	MERIDA
+15	015	MIRANDA
+16	016	MONAGAS
+17	017	NUEVA ESPARTA
+18	018	PORTUGUESA
+19	019	SUCRE
+20	020	TACHIRA
+21	021	TRUJILLO
+22	022	YARACUY
+23	023	ZULIA
+24	024	VARGAS
+25	025	DEPENDENCIAS FEDERALES
+\.
+
+
+--
+-- Name: estados_idest_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('estados_idest_seq', 25, true);
+
+
+--
+-- Name: estados_tramite_cod_estado_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('estados_tramite_cod_estado_seq', 1, true);
+
+
+--
+-- Data for Name: estados_tramites; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY estados_tramites (cod_estado_tramite, abrevia_estado_tramite, descripcion_estado_tramite) FROM stdin;
+1	NEW	Nuevo tramite
+\.
+
+
+--
+-- Data for Name: municipios; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY municipios (idmun, codest, codmun, desmun) FROM stdin;
+1	001	001	LIBERTADOR
+2	002	001	ALTO ORINOCO
+3	002	002	ATABAPO
+4	002	003	ATURES
+5	002	004	AUTANA
+6	002	005	MAROA
+7	002	006	MANAPIARE
+8	002	007	RÍO NEGRO
+9	003	001	ANACO
+10	003	002	ARAGUA
+11	003	003	FERNANDO DE PEÑALVER
+12	003	004	FRANCISCO DEL CARMEN CARVAJAL
+13	003	005	FRANCISCO DE MIRANDA
+14	003	006	GUANTA
+15	003	007	INDEPENDENCIA
+16	003	008	JUAN ANTONIO SOTILLO
+17	003	009	JUAN MANUEL CAJIGAL
+18	003	010	JOSE GREGORIO MONAGAS
+19	003	011	LIBERTAD
+20	003	012	MANUEL EZEQUIEL BRUZUAL
+21	003	013	PEDRO MARIA FREITES
+22	003	014	PÍRITU
+23	003	015	SAN JOSE DE GUANIPA
+24	003	016	SAN JUAN DE CAPISTRANO
+25	003	017	SANTA ANA
+26	003	018	SIMON BOLIVAR
+27	003	019	SIMON RODRIGUEZ
+28	003	020	SIR ARTUR MC GREGOR
+29	003	021	TURISTICO DIEGO BAUTISTA URBANEJA
+30	004	001	ACHAGUAS
+31	004	002	BIRUACA
+32	004	003	MUÑOZ
+33	004	004	PÁEZ
+34	004	005	PEDRO CAMEJO
+35	004	006	RÓMULO GALLEGOS
+36	004	007	SAN FERNANDO
+37	005	001	BOLÍVAR
+38	005	002	CAMATAGUA
+39	005	003	GIRARDOT
+40	005	004	JOSÉ ÁNGEL LAMAS
+41	005	005	JOSÉ FÉLIX RIBAS
+42	005	006	JOSÉ RAFAEL REVENGA
+43	005	007	LIBERTADOR
+44	005	008	MARIO BRICEÑO IRAGORRY
+45	005	009	SAN CASIMIRO
+46	005	010	SAN SEBASTIÁN
+47	005	011	SANTIAGO MARIÑO
+48	005	012	SANTOS MICHELENA
+49	005	013	SUCRE
+50	005	014	TOVAR
+51	005	015	URDANETA
+52	005	016	ZAMORA
+53	005	017	FRANCISCO LINARES ALCÁNTARA
+54	005	018	OCUMARE DE LA COSTA DE ORO
+55	006	001	ALBERTO ARVELO TORREALBA
+56	006	002	ANTONIO JOSÉ DE SUCRE
+57	006	003	ARISMENDI
+58	006	004	BARINAS
+59	006	005	BOLÍVAR
+60	006	006	CRUZ PAREDES
+61	006	007	EZEQUIEL ZAMORA
+62	006	008	OBISPOS
+63	006	009	PEDRAZA
+64	006	010	ROJAS
+65	006	011	SOSA
+66	006	012	ANDRÉS ELOY BLANCO
+67	007	001	CARONÍ
+68	007	002	CEDEÑO
+69	007	003	EL CALLAO
+70	007	004	GRAN SABANA
+71	007	005	HERES
+72	007	006	PIAR
+73	007	007	RAÚL LEONI
+74	007	008	ROSCIO
+75	007	009	SIFONTES
+76	007	010	SUCRE
+77	007	011	PADRE PEDRO CHIEN
+78	008	001	BEJUMA
+79	008	002	CARLOS ARVELO
+80	008	003	DIEGO IBARRA
+81	008	004	GUACARA
+82	008	005	JUAN JOSÉ MORA
+83	008	006	LIBERTADOR
+84	008	007	LOS GUAYOS
+85	008	008	MIRANDA
+86	008	009	MONTALBÁN
+87	008	010	NAGUANAGUA
+88	008	011	PUERTO CABELLO
+89	008	012	SAN DIEGO
+90	008	013	SAN JOAQUÍN
+91	008	014	VALENCIA
+92	009	001	ANZOÁTEGUI
+93	009	002	FALCÓN
+94	009	003	GIRARDOT
+95	009	004	LIMA BLANCO
+96	009	005	EL PAO DE SAN JUAN BAUTISTA
+97	009	006	RICAURTE
+98	009	007	RÓMULO GALLEGOS
+99	009	008	SAN CARLOS DE AUSTRIA
+100	009	009	TINACO
+101	010	001	ANTONIO DÍAZ
+102	010	002	CASACOIMA
+103	010	003	PEDERNALES
+104	010	004	TUCUPITA
+105	011	001	ACOSTA
+106	011	002	BOLÍVAR
+107	011	003	BUCHIVACOA
+108	011	004	CACIQUE MANAURE
+109	011	005	CARIRUBANA
+110	011	006	COLINA
+111	011	007	DABAJURO
+112	011	008	DEMOCRACIA
+113	011	009	FALCÓN
+114	011	010	FEDERACIÓN
+115	011	011	JACURA
+116	011	012	LOS TAQUES
+117	011	013	MAUROA
+118	011	014	MIRANDA
+119	011	015	MONSEÑOR ITURRIZA
+120	011	016	PALMASOLA
+121	011	017	PETIT
+122	011	018	PÍRITU
+123	011	019	SAN FRANCISCO
+124	011	020	SILVA
+125	011	021	SUCRE
+126	011	022	TOCOPERO
+127	011	023	UNIÓN
+128	011	024	URUMACO
+129	011	025	ZAMORA
+130	012	001	CAMAGUAN
+131	012	002	CHAGUARAMAS
+132	012	003	EL SOCORRO
+133	012	004	SAN GERONIMO DE GUAYABAL
+134	012	005	LEONARDO INFANTE
+135	012	006	LAS MERCEDES
+136	012	007	JULIAN MECHADO
+137	012	008	FRANCISCO DE MIRANDA
+138	012	009	JOSE TADEO MONAGAS
+139	012	010	ORTIZ
+140	012	011	JOSE FELIX RIBAS
+141	012	012	JUAN GERMAN ROSCIO
+142	012	013	SAN JOSE DE GUARIBE
+143	012	014	SANTA MARIA DE IPIRE
+144	012	015	PEDRO ZARAZA
+145	013	001	ANDRÉS ELOY BLANCO
+146	013	002	CRESPO
+147	013	003	IRIBARREN
+148	013	004	JIMÉNEZ
+149	013	005	MORÁN
+150	013	006	PALAVECINO
+151	013	007	SIMÓN PLANAS
+152	013	008	TORRES
+153	013	009	URDANETA
+154	014	001	ALBERTO ADRIANI
+155	014	002	ANDRÉS BELLO
+156	014	003	ANTONIO PINTO SALINAS
+157	014	004	ARICAGUA
+158	014	005	ARZOBISPO CHACÓN
+159	014	006	CAMPO ELÍAS
+160	014	007	CARACCIOLO PARRA OLMEDO
+161	014	008	CARDENAL QUINTERO
+162	014	009	GUARAQUE
+163	014	010	JULIO CÉSAR SALAS
+164	014	011	JUSTO BRICEÑO
+165	014	012	LIBERTADOR
+166	014	013	MIRANDA
+167	014	014	OBISPO RAMOS DE LORA
+168	014	015	PADRE NOGUERA
+169	014	016	PUEBLO LLANO
+170	014	017	RANGEL
+171	014	018	RIVAS DÁVILA
+172	014	019	SANTOS MARQUINA
+173	014	020	SUCRE
+174	014	021	TOVAR
+175	014	022	TULIO FEBRES CORDERO
+176	014	023	ZEA
+177	015	001	ACEVEDO
+178	015	002	ANDRÉS BELLO
+179	015	003	BARUTA
+180	015	004	BRIÓN
+181	015	005	BUROZ
+182	015	006	CARRIZAL
+183	015	007	CHACAO
+184	015	008	CRISTÓBAL ROJAS
+185	015	009	EL HATILLO
+186	015	010	GUAICAIPURO
+187	015	011	INDEPENDENCIA
+188	015	012	LANDER
+189	015	013	LOS SALIAS
+190	015	014	PÁEZ
+191	015	015	PAZ CASTILLO
+192	015	016	PEDRO GUAL
+193	015	017	PLAZA
+194	015	018	SIMÓN BOLÍVAR
+195	015	019	SUCRE
+196	015	020	URDANETA
+197	015	021	ZAMORA
+198	016	001	ACOSTA
+199	016	002	AGUASAY
+200	016	003	BOLÍVAR
+201	016	004	CARIPE
+202	016	005	CEDEÑO
+203	016	006	EZEQUIEL ZAMORA
+204	016	007	LIBERTADOR
+205	016	008	MATURIN
+206	016	009	PIAR
+207	016	010	PUNCERES
+208	016	011	SANTA BÁRBARA
+209	016	012	SOTILLO
+210	016	013	URACOA
+211	017	001	ANTOLÍN DEL CAMPO
+212	017	002	ARISMENDI
+213	017	003	DÍAZ
+214	017	004	GARCÍA
+215	017	005	GÓMEZ
+216	017	006	MANEIRO
+217	017	007	MARCANO
+218	017	008	MARIÑO
+219	017	009	PENÍNSULA DE MACANAO
+220	017	010	TUBORES
+221	017	011	VILLALBA
+222	018	001	AGUA BLANCA
+223	018	002	ARAURE
+224	018	003	ESTELLER
+225	018	004	GUANARE
+226	018	005	GUANARITO
+227	018	006	MONSEÑOR JOSÉ VICENTE DE UNDA
+228	018	007	OSPINO
+229	018	008	PÁEZ
+230	018	009	PAPELÓN
+231	018	010	SAN GENARO DE BOCONOITO
+232	018	011	SAN RAFAEL DE ONOTO
+233	018	012	SANTA ROSALÍA
+234	018	013	SUCRE
+235	018	014	TURÉN
+236	019	001	ANDRÉS ELOY BLANCO
+237	019	002	ANDRÉS MATA
+238	019	003	ARISMENDI
+239	019	004	BENÍTEZ
+240	019	005	BERMÚDEZ
+241	019	006	BOLÍVAR
+242	019	007	CAJIGAL
+243	019	008	CRUZ SALMERÓN ACOSTA
+244	019	009	LIBERTADOR
+245	019	010	MARIÑO
+246	019	011	MEJÍA
+247	019	012	MONTES
+248	019	013	RIBERO
+249	019	014	SUCRE
+250	019	015	VALDEZ
+251	020	001	ANDRÉS BELLO
+252	020	002	ANTONIO RÓMULO COSTA
+253	020	003	AYACUCHO
+254	020	004	BOLÍVAR
+255	020	005	CÁRDENAS
+256	020	006	CÓRDOBA
+257	020	007	FERNÁNDEZ FEO
+258	020	008	FRANCISCO DE MIRANDA
+259	020	009	GARCÍA DE HEVIA
+260	020	010	GUÁSIMOS
+261	020	011	INDEPENDENCIA
+262	020	012	JÁUREGUI
+263	020	013	JOSÉ MARÍA VARGAS
+264	020	014	JUNÍN
+265	020	015	LIBERTAD
+266	020	016	LIBERTADOR
+267	020	017	LOBATERA
+268	020	018	MICHELENA
+269	020	019	PANAMERICANO
+270	020	020	PEDRO MARÍA UREÑA
+271	020	021	RAFAEL URDANETA
+272	020	022	SAMUEL DARÍO MALDONADO
+273	020	023	SAN CRISTÓBAL
+274	020	024	SEBORUCO
+275	020	025	SIMÓN RODRÍGUEZ
+276	020	026	SUCRE
+277	020	027	TORBES
+278	020	028	URIBANTE
+279	020	029	SAN JUDAS TADEO
+280	021	001	ANDRÉS BELLO
+281	021	002	BOCONÓ
+282	021	003	BOLÍVAR
+283	021	004	CANDELARIA
+284	021	005	CARACHE
+285	021	006	ESCUQUE
+286	021	007	JOSÉ FELIPE MÁRQUEZ CAÑIZALES
+287	021	008	JOSÉ VICENTE CAMPO ELÍAS
+288	021	009	LA CEIBA
+289	021	010	MIRANDA
+290	021	011	MONTE CARMELO
+291	021	012	MOTATÁN
+292	021	013	PAMPÁN
+293	021	014	PAMPANITO
+294	021	015	RAFAEL RANGEL
+295	021	016	SAN RAFAEL DE CARVAJAL
+296	021	017	SUCRE
+297	021	018	TRUJILLO
+298	021	019	URDANETA
+299	021	020	VALERA
+300	022	001	ARISTIDES BASTIDAS
+301	022	002	BOLÍVAR
+302	022	003	BRUZUAL
+303	022	004	COCOROTE
+304	022	005	INDEPENDENCIA
+305	022	006	JOSÉ ANTONIO PÁEZ
+306	022	007	LA TRINIDAD
+307	022	008	MANUEL MONGE
+308	022	009	NIRGUA
+309	022	010	PEÑA
+310	022	011	SAN FELIPE
+311	022	012	SUCRE
+312	022	013	URACHICHE
+313	022	014	VEROES
+314	023	001	ALMIRANTE PADILLA
+315	023	002	BARALT
+316	023	003	CABIMAS
+317	023	004	CATATUMBO
+318	023	005	COLÓN
+319	023	006	FRANCISCO JAVIER PULGAR
+320	023	007	JESÚS ENRIQUE LOSSADA
+321	023	008	JESÚS MARÍA SEMPRÚN
+322	023	009	LA CAÑADA DE URDANETA
+323	023	010	LAGUNILLAS
+324	023	011	MACHIQUES DE PERIJÁ
+325	023	012	MARA
+326	023	013	MARACAIBO
+327	023	014	MIRANDA
+328	023	015	PÁEZ
+329	023	016	ROSARIO DE PERIJÁ
+330	023	017	SAN FRANCISCO
+331	023	018	SANTA RITA
+332	023	019	SIMÓN BOLÍVAR
+333	023	020	SUCRE
+334	023	021	VALMORE RODRÍGUEZ
+335	024	001	VARGAS
+336	025	001	ARCHIPIELAGO LOS ROQUES
+337	025	002	LOS TESTIGOS
+338	025	003	CHIMANAS
+339	025	004	GRUPO 4
+340	025	005	GRUPO 5
+341	025	006	GRUPO 6
+342	025	007	GRUPO 7
+\.
+
+
+--
+-- Name: municipios_idmun_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('municipios_idmun_seq', 342, true);
+
+
+--
+-- Data for Name: parroquias; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY parroquias (idpar, codest, codmun, codpar, despar) FROM stdin;
+1	001	001	001	ALTAGRACIA
+2	001	001	002	ANTIMANO
+3	001	001	003	CANDELARIA
+4	001	001	004	CARICUAO
+5	001	001	005	CATEDRAL
+6	001	001	006	COCHE
+7	001	001	007	EL JUNQUITO
+8	001	001	008	EL PARAISO
+9	001	001	009	EL RECREO
+10	001	001	010	EL VALLE
+11	001	001	011	LA PASTORA
+12	001	001	012	LA VEGA
+13	001	001	013	MACARAO
+14	001	001	014	SAN AGUSTIN
+15	001	001	015	SAN BERNARDINO
+16	001	001	016	SAN JOSE
+17	001	001	017	SAN JUAN
+18	001	001	018	SAN PEDRO
+19	001	001	019	SANTA ROSALIA
+20	001	001	020	SANTA TERESA
+21	001	001	021	SUCRE
+22	001	001	022	23 DE ENERO
+23	002	001	001	HUACHAMACARE
+24	002	001	002	MARAWAKA
+25	002	001	003	MAVACA
+26	002	001	004	SIERRA PARIMA
+27	002	002	001	UCATA
+28	002	002	002	YACAPANA
+29	002	002	003	CANAME
+30	002	003	001	FERNANDO GIRON TOVAR
+31	002	003	002	LUIS ALBERTO GOMEZ
+32	002	003	003	PARHUEÑA
+33	002	003	004	PLATANILLAL
+34	002	004	001	SAMARIAPO
+35	002	004	002	SIPAPO
+36	002	004	003	MUNDUAPO
+37	002	004	004	GUAYAPO
+38	002	005	001	VICTORINO
+39	002	005	002	COMUNIDAD
+40	002	006	001	ALTO VENTUARI
+41	002	006	002	MEDIO VENTUARI
+42	002	006	003	BAJO VENTUARI
+43	002	007	001	SOLANO
+44	002	007	002	CASIQUIARE
+45	002	007	003	COCUY
+46	003	001	001	ANACO
+47	003	001	002	SAN AGUSTIN
+48	003	002	001	ARAGUA
+49	003	002	002	CACHIPO
+50	003	003	001	PUERTO PIRITU
+51	003	003	002	SAN MIGUEL
+52	003	003	003	SUCRE
+53	003	004	001	VALLE DE GUANAPE
+54	003	004	002	SANTA BARBARA
+55	003	005	001	PARIAGUAN
+56	003	005	002	ATAPIRIRE
+57	003	005	003	BOCA DEL PAO
+58	003	005	004	EL PAO DE BARCELONA
+59	003	005	005	MUCURA
+60	003	006	001	GUANTA
+61	003	006	002	CHORRERON
+62	003	007	001	SOLEDAD
+63	003	007	002	MAMO
+64	003	008	001	PUERTO LA CRUZ
+65	003	008	002	POZUELOS
+66	003	009	001	ONOTO
+67	003	009	002	SAN PABLO
+68	003	010	001	MAPIRE
+69	003	010	002	PIAR
+70	003	010	003	SAN DIEGO DE CABRUTICA
+71	003	010	004	SANTA CLARA
+72	003	010	005	UVERITO
+73	003	010	006	ZUATA
+74	003	011	001	SAN MATEO
+75	003	011	002	EL CARITO
+76	003	011	003	SANTA INES
+77	003	012	001	CLARINES
+78	003	012	002	GUANAPE
+79	003	012	003	SABANA DE UCHIRE
+80	003	013	001	CANTAURA
+81	003	013	002	LIBERTADOR
+82	003	013	003	SANTA ROSA
+83	003	013	004	URICA
+84	003	014	001	PIRITU
+85	003	014	002	SAN FRANCISCO
+86	003	016	001	BOCA DE URICHE
+87	003	016	002	BOCA DE CHAVEZ
+88	003	017	001	SANTA ANA
+89	003	017	002	PUEBLO NUEVO
+90	003	018	001	EL CARMEN
+91	003	018	002	SAN CRISTOBAL
+92	003	018	003	BERGATIN
+93	003	018	004	CAIGUA
+94	003	018	005	EL PILAR
+95	003	018	006	NARICUAL
+96	003	019	001	EDMUNDO BARRIOS
+97	003	019	002	MIGUEL OTERO SILVA
+98	003	020	001	EL CHAPARRO
+99	003	020	002	TOMAS ALFARO CALATRAVA
+100	003	021	001	LECHERIAS
+101	003	021	002	EL MORRO
+102	004	001	001	ACHAGUAS
+103	004	001	002	APURITO
+104	004	001	003	EL YAGUAL
+105	004	001	004	GUACHARA
+106	004	001	005	MUCURITAS
+107	004	001	006	QUESERAS DEL MEDIO
+108	004	002	001	BIRUACA
+109	004	003	001	BRUZUAL
+110	004	003	002	MANTECAL
+111	004	003	003	QUINTERO
+112	004	003	004	RINCON HONDO
+113	004	003	005	SAN VICENTE
+114	004	004	001	GUASDALITO
+115	004	004	002	ARAMENDI
+116	004	004	003	EL AMPARO
+117	004	004	004	SAN CAMILO
+118	004	004	005	URDANETA
+119	004	005	001	SAN JUAN DE PAYARA
+120	004	005	002	CODAZZI
+121	004	005	003	CUNAVICHE
+122	004	006	001	ELORZA
+123	004	006	002	LA TRINIDAD
+124	004	007	001	SAN FERNANDO
+125	004	007	002	EL RECREO
+126	004	007	003	PEÑALVER
+127	004	007	004	SAN RAFAEL DE ATAMAICA
+128	005	002	001	CAMATAGUA
+129	005	002	002	CARMEN DE CURA
+130	005	003	001	CHORONI
+131	005	003	002	LAS DELICIAS
+132	005	003	003	MADRE MARIA DE SAN JOSE
+133	005	003	004	JOAQUIN CRESPO
+134	005	003	005	PEDRO JOSE OVALLES
+135	005	003	006	JOSE CASANOVA GODOY
+136	005	003	007	ANDRES ELOY BLANCO
+137	005	003	008	LOS TACARIGUA
+138	005	005	001	JOSE FELIZ RIBAS
+139	005	005	002	CASTOR NIEVES RIOS
+140	005	005	003	LAS GUACAMAYAS
+141	005	005	004	PAO DE ZARATE
+142	005	005	005	ZUATA
+143	005	007	001	LIBERTADOR
+144	005	007	002	SAN MARTIN DE PORRES
+145	005	008	001	MARIO BRICEÑO IRAGORRY
+146	005	008	002	CAÑA DE AZUCAR
+147	005	009	001	SAN CASIMIRO
+148	005	009	002	GUIRIPA
+149	005	009	003	OLLAS DE CARAMACATE
+150	005	009	004	VALLE MORIN
+151	005	011	001	SANTIAGO MARIÑO
+152	005	011	002	AREVALO APONTE
+153	005	011	003	CHUAO
+154	005	011	004	SAMAN DE GUERE
+155	005	011	005	ALFREDO PACHECO MIRANDA
+156	005	012	001	SANTOS MICHELENA
+157	005	012	002	TIARA
+158	005	013	001	SUCRE
+159	005	013	002	BELLA VISTA
+160	005	015	001	URDANETA
+161	005	015	002	LAS PEÑITAS
+162	005	015	003	SAN FRANCISCO DE CARA
+163	005	015	004	TAGUAY
+164	005	016	001	ZAMORA
+165	005	016	002	MAGDALENO
+166	005	016	003	SAN FRANCISCO DE ASIS
+167	005	016	004	VALLES DE TUCUTUNEMO
+168	005	016	005	AUGUSTO MIJARES
+169	005	017	001	FRANCISCO LINARES ALCANTARA
+170	005	017	002	FRANCISCO DE MIRANDA
+171	005	017	003	MONSEÑOR FELICIANO GONZALES
+172	006	001	001	SABANETA
+173	006	001	002	RODRIGUEZ DOMINGUEZ
+174	006	002	001	TICOPORO
+175	006	002	002	ANDRES BELLO
+176	006	002	003	NICOLAS PULIDO
+177	006	003	001	ARISMENDI
+178	006	003	002	GUADARRAMA
+179	006	003	003	LA UNION
+180	006	003	004	SAN ANTONIO
+181	006	004	001	BARINAS
+182	006	004	002	ALFREDO ARVELO LARRIVA
+183	006	004	003	SAN SILVESTRE
+184	006	004	004	SANTA INES
+185	006	004	005	SANTA LUCIA
+186	006	004	006	TORUNOS
+187	006	004	007	EL CARMEN
+188	006	004	008	ROMULO BETANCOURT
+189	006	004	009	CORAZON DE JESUS
+190	006	004	010	RAMON IGNACIO MENDEZ
+191	006	004	011	ALTO BARINAS
+192	006	004	012	MANUEL PALACIOS FAJARDO
+193	006	004	013	JUAN ANTONIO RODRIGUEZ DOMINGUEZ
+194	006	004	014	DOMINGA ORTIZ DE PAEZ
+195	006	005	001	BARINITAS
+196	006	005	002	ALTAMIRA
+197	006	005	003	CALDERAS
+198	006	006	001	BARRANCAS
+199	006	006	002	EL SOCORRO
+200	006	006	003	MASPARRITO
+201	006	007	001	SANTA BARBARA
+202	006	007	002	JOSE IGNACIO DEL PUMAR
+203	006	007	003	PEDRO BRICEÑO MENDEZ
+204	006	007	004	RAMON IGNACIO MENDEZ
+205	006	008	001	OBISPOS
+206	006	008	002	EL REAL
+207	006	008	003	LA LUZ
+208	006	008	004	LOS GUASIMITOS
+209	006	009	001	CIUDAD BOLIVIA
+210	006	009	002	IGNACIO BRICEÑO
+211	006	009	003	JOSE FELIX RIBAS
+212	006	009	004	PAEZ
+213	006	010	001	LIBERTAD
+214	006	010	002	DOLORES
+215	006	010	003	PALACIOS FAJARDO
+216	006	010	004	SANTA ROSA
+217	006	011	001	CIUDAD DE NUTRIAS
+218	006	011	002	EL REGALO
+219	006	011	003	PUERTO DE NUTRIAS
+220	006	011	004	SANTA CATALINA
+221	006	012	001	EL CANTON
+222	006	012	002	SANTA CRUZ DE GUACAS
+223	006	012	003	PUERTO VIVAS
+224	007	001	001	EL CACHAMAY
+225	007	001	002	EL CHIRICA
+226	007	001	003	DALLA COSTA
+227	007	001	004	ONCE DE ABRIL
+228	007	001	005	SIMON BOLIVAR
+229	007	001	006	UNARE
+230	007	001	007	UNIVERSIDAD
+231	007	001	008	VISTA DEL SOL
+232	007	001	009	POZO VERDE
+233	007	001	010	YOCOIMA
+234	007	002	001	CEDEÑO
+235	007	002	002	ALTAGRACIA
+236	007	002	003	ASCENCION FARRERAS
+237	007	002	004	GUANIAMO
+238	007	002	005	LA URBANA
+239	007	002	006	PIJIGUAOS
+240	007	004	001	GRAN SABANA
+241	007	004	002	IKABARU
+242	007	005	001	AGUA SALADA
+243	007	005	002	CATEDRAL
+244	007	005	003	JOSE ANTONIO PAEZ
+245	007	005	004	LA SABANITA
+246	007	005	005	MARHUANTA
+247	007	005	006	VISTA HERMOSA
+248	007	005	007	ORINOCO
+249	007	005	008	PANAPANA
+250	007	005	009	ZEA
+251	007	006	001	PIAR
+252	007	006	002	ANDRES ELOY BLANCO
+253	007	006	003	PEDRO COVA
+254	007	007	001	RAUL LEONI
+255	007	007	002	BARCELONETA
+256	007	007	003	SAN FRANCISCO
+257	007	007	004	SANTA BARBARA
+258	007	008	001	ROSCIO
+259	007	008	002	SALOM
+260	007	009	001	SIFONTES
+261	007	009	002	DALLA COSTA
+262	007	009	003	SAN ISIDRO
+263	007	010	001	SUCRE
+264	007	010	002	ARIPAO
+265	007	010	003	GUARATARO
+266	007	010	004	LAS MAJADAS
+267	007	010	005	MOITACO
+268	008	001	001	BEJUMA
+269	008	001	002	CANOABO
+270	008	001	003	SIMON BOLIVAR
+271	008	002	001	GUIGUE
+272	008	002	002	BELEN
+273	008	002	003	TACARIGUA
+274	008	003	001	AGUAS CALIENTES
+275	008	003	002	MARIARA
+276	008	004	001	CIUDAD ALIANZA
+277	008	004	002	GUACARA
+278	008	004	003	YAGUA
+279	008	005	001	MORON
+280	008	005	002	URAMA
+281	008	006	001	TOCUYITO
+282	008	006	002	INDEPENDENCIA
+283	008	007	001	LOS GUAYOS
+284	008	008	001	MIRANDA
+285	008	009	001	MONTALBAN
+286	008	010	001	NAGUANAGUA
+287	008	011	001	BARTOLOME SALOM
+288	008	011	002	DEMOCRACIA
+289	008	011	003	FRATERNIDAD
+290	008	011	004	GOAIGOAZA
+291	008	011	005	JUAN JOSE FLORES
+292	008	011	006	UNION
+293	008	011	007	BORBURATA
+294	008	011	008	PATANEMO
+295	008	012	001	SAN DIEGO
+296	008	013	001	SAN JOAQUIN
+297	008	014	001	CANDELARIA
+298	008	014	002	CATEDRAL
+299	008	014	003	EL SOCORRO
+300	008	014	004	MIGUEL PEÑA
+301	008	014	005	RAFAEL URDANETA
+302	008	014	006	SAN BLAS
+303	008	014	007	SAN JOSE
+304	008	014	008	SANTA ROSA
+305	008	014	009	NEGRO PRIMERO
+306	009	001	001	COJEDES
+307	009	001	002	JUAN DE MATA SUAREZ
+308	009	002	001	TINAQUILLO
+309	009	003	001	EL BAUL
+310	009	003	002	SUCRE
+311	009	004	001	MACAPO
+312	009	004	002	LA AGUADITA
+313	009	005	001	EL PAO
+314	009	006	001	LIBERTAD DE COJEDES
+315	009	006	002	EL AMPARO
+316	009	007	001	ROMULO GALLEGOS
+317	009	008	001	SAN CARLOS DE AUSTRIA
+318	009	008	002	JUAN ANGEL BRAVO
+319	009	008	003	MANUEL MANRIQUE
+320	009	009	001	GENERAL EN JEFE JOSE
+321	009	009	002	LAURENCIO SILVA
+322	010	001	001	CURIAPO
+323	010	001	002	ALMIRANTE LUIS BRION
+324	010	001	003	FRANCISCO ANICETO LUGO
+325	010	001	004	MANUEL RENAUD
+326	010	001	005	PADRE BARRAL
+327	010	001	006	SANTOS DE ABELGAS
+328	010	002	001	IMATACA
+329	010	002	002	CINCO DE JULIO
+330	010	002	003	JUAN BAUTISTA ARISMENDI
+331	010	002	004	MANUEL PIAR
+332	010	002	005	ROMULO GALLEGOS
+333	010	003	001	PEDERNALES
+334	010	003	002	LUIS BELTRAN PRIETO FIGUEROA
+335	010	004	001	SAN JOSE
+336	010	004	002	JOSE VIDAL MARCANO
+337	010	004	003	JUAN MILLAN
+338	010	004	004	LEONARDO LUIS PINEDA
+339	010	004	005	MARICAL ANTONIO JOSE DE SUCRE
+340	010	004	006	MONSEÑOR ARGUIMIRO GARCIA
+341	010	004	007	SAN RAFAEL
+342	010	004	008	VIRGEN DEL VALLE
+343	011	001	001	SAN JUAN DE LOS CAYOS
+344	011	001	002	CAPADARE
+345	011	001	003	LA PASTORA
+346	011	001	004	LIBERTADOR
+347	011	002	001	SAN LUIS
+348	011	002	002	ARACUA
+349	011	002	003	LA PEÑA
+350	011	003	001	CAPATARIDA
+351	011	003	002	BARIRO
+352	011	003	003	BOROJO
+353	011	003	004	GUAJIRO
+354	011	003	005	SEQUE
+355	011	003	006	ZAZARIDA
+356	011	005	001	CARIRUBANA
+357	011	005	002	NORTE
+358	011	005	003	PUNTA CARDON
+359	011	005	004	SANTA ANA
+360	011	006	001	LA VELA DE CORO
+361	011	006	002	ACURIGUA
+362	011	006	003	GUAIBACOA
+363	011	006	004	LAS CALDERAS
+364	011	006	005	MACORUCA
+365	011	008	001	PEDREGAL
+366	011	008	002	AGUA CLARA
+367	011	008	003	AVARIA
+368	011	008	004	PIEDRA GRANDE
+369	011	008	005	PURURECHE
+370	011	009	001	PUEBLO NUEVO
+371	011	009	002	ADICORA
+372	011	009	003	BARAIVED
+373	011	009	004	BUENA VISTA
+374	011	009	005	JADACAQUIVA
+375	011	009	006	MORUY
+376	011	009	007	ADAURE
+377	011	009	008	EL HATO
+378	011	009	009	EL VINCULO
+379	011	010	001	CHURUGUARA
+380	011	010	002	AGUA LARGA
+381	011	010	003	PAUJI
+382	011	010	004	INDEPENDENCIA
+383	011	010	005	MAPARARI
+384	011	011	001	JACURA
+385	011	011	002	AGUA LINDA
+386	011	011	003	ARAURIMA
+387	011	012	001	LOS TAQUES
+388	011	012	002	JUDIBANA
+389	011	013	001	MENE DE MAUROA
+390	011	013	002	CASIGUA
+391	011	013	003	SAN FELIX
+392	011	014	001	SAN ANTONIO
+393	011	014	002	SAN GABRIEL
+394	011	014	003	SANTA ANA
+395	011	014	004	GUZMAN GUILLERMO
+396	011	014	005	MITARE
+397	011	014	006	RIO SECO
+398	011	014	007	SABANETA
+399	011	015	001	CHICHIRIVICHE
+400	011	015	002	BOCA DE TOCUYO
+401	011	015	003	TOCUYO DE LA COSTA
+402	011	017	001	CABURE
+403	011	017	002	COLINA
+404	011	017	003	CURIMAGUA
+405	011	018	001	PIRITU
+406	011	018	002	SAN JOSE DE LA COSTA
+407	011	020	001	TUCACAS
+408	011	020	002	BOCA DE AROA
+409	011	021	001	SUCRE
+410	011	021	002	PECAYA
+411	011	022	001	TOCOPERO
+412	011	023	001	SANTA CRUZ DE BUCARAL
+413	011	023	002	EL CHARAL
+414	011	023	003	LAS VEGAS DEL TUY
+415	011	024	001	URUMACO
+416	011	024	002	BRUZUAL
+417	011	025	001	PUERTO CUMAREBO
+418	011	025	002	LA CIENAGA
+419	011	025	003	LA SOLEDAD
+420	011	025	004	PUEBLO CUMAREBO
+421	011	025	005	ZAZARIDA
+422	012	001	001	CAMAGUAN
+423	012	001	002	PUERTO MIRANDA
+424	012	001	003	UVERITO
+425	012	002	001	CHAGUARAMAS
+426	012	003	001	EL SOCORRO
+427	012	004	001	SAN GERONIMO DE GUAYABAL
+428	012	004	002	CAZORLA
+429	012	005	001	VALLE DE LA PASCUA
+430	012	005	002	ESPINO
+431	012	006	001	LAS MERCEDES
+432	012	006	002	CABRUTA
+433	012	006	003	SANTA RITA MANAPIRE
+434	012	007	001	EL SOMBRERO
+435	012	007	002	SOSA
+436	012	008	001	CALABOZO
+437	012	008	002	EL CALVARIO
+438	012	008	003	EL RASTRO
+439	012	008	004	GUARDATINAJAS
+440	012	009	001	ALTAGRACIA DE ORITUCO
+441	012	009	002	LEZAMA
+442	012	009	003	LIBERTAD DE ORITUCO
+443	012	009	004	PASO REAL DE MACAIRA
+444	012	009	005	SAN FRANCISCO DE MACAIRA
+445	012	009	006	SAN RAFAEL DE ORITUCO
+446	012	009	007	SOUBLETTE
+447	012	010	001	ORTIZ
+448	012	010	002	SAN FRANCISCO DE TIZNADOS
+449	012	010	003	SAN JOSE DE TIZNADOS
+450	012	010	004	SAN LORENZO DE TIZNADOS
+451	012	011	001	TUCUPIDO
+452	012	011	002	SAN RAFAEL DE LAYA
+453	012	012	001	SAN JUAN DE LOS MORROS
+454	012	012	002	CANTAGALLO
+455	012	012	003	PARAPARA
+456	012	013	001	SAN JOSE DE GUARIBE
+457	012	014	001	SANTA MARIA DE IPIRE
+458	012	014	002	ALTAMIRA
+459	012	015	001	ZARAZA
+460	012	015	002	SAN JOSE DE UNARE
+461	013	001	001	PIO TAMACHO
+462	013	001	002	QUEBRADA HONDA DE GUACHE
+463	013	001	003	YACAMBU
+464	013	002	001	FREITEZ
+465	013	002	002	JOSE MARIA BLANCO
+466	013	003	001	CATEDRAL
+467	013	003	002	CONCEPCION
+468	013	003	003	EL CUJI
+469	013	003	004	JUAN DE VILLEGAS
+470	013	003	005	SANTA ROSA
+471	013	003	006	TAMACA
+472	013	003	007	UNION
+473	013	003	008	AGUEDO FELIPE ALVARADO
+474	013	003	009	BUENA VISTA
+475	013	003	010	JUAREZ
+476	013	004	001	JUAN BAUTISTA RODRIGUEZ
+477	013	004	002	CUARA
+478	013	004	003	DIEGO DE LOZADA
+479	013	004	004	PARAISO DE SAN JOSE
+480	013	004	005	SAN MIGUEL
+481	013	004	006	TINTORERO
+482	013	004	007	JOSE BERNARDO DURANTE
+483	013	004	008	CORONEL MARIANO PERAZA
+484	013	005	001	BOLIVAR
+485	013	005	002	ANZOATEGUI
+486	013	005	003	GUARICO
+487	013	005	004	HILARIO LUNA Y LUNA
+488	013	005	005	HUMUCARO ALTO
+489	013	005	006	HUMUCARO BAJO
+490	013	005	007	LA CANDELARIA
+491	013	005	008	MORAN
+492	013	006	001	CABUDARE
+493	013	006	002	JOSE GREGORIO BASTIDAS
+494	013	006	003	AGUA VIVA
+495	013	007	001	SARARE
+496	013	007	002	BURIA
+497	013	007	003	GUSTAVO VEGAS LEON
+498	013	008	001	TRINIDAD SAMUEL
+499	013	008	002	ANTONIO DIAZ
+500	013	008	003	CAMACARO
+501	013	008	004	CASTAÑEDA
+502	013	008	005	CECILIO ZUBILLAGA
+503	013	008	006	CHIQUINQUIRA
+504	013	008	007	EL BLANCO
+505	013	008	008	ESPINOZA DE LOS MONTEROS
+506	013	008	009	LARA
+507	013	008	010	LAS MERCEDES
+508	013	008	011	MANUEL MORILLO
+509	013	008	012	MONTAÑA VERDE
+510	013	008	013	MONTES DE OCA
+511	013	008	014	TORREZ
+512	013	008	015	HERIBERTO ARROYO
+513	013	008	016	REYES VARCAS
+514	013	008	017	ALTAGRACIA
+515	013	009	001	SIQUISIQUE
+516	013	009	002	MOROTURO
+517	013	009	003	SAN MIGUEL
+518	013	009	004	XAGUAS
+519	014	001	001	PRESIDENTE BETANCOURD
+520	014	001	002	PRESIENTE PAEZ
+521	014	001	003	PRESIDENTE ROMULO GALLEGOS
+522	014	001	004	GABRIEL PICON GONZALEZ
+523	014	001	005	HECTOR AMABLE MORA
+524	014	001	006	JOSE NUCETE SARDI
+525	014	001	007	PULIDO MENDEZ
+526	014	003	001	PINTO SALINAS
+527	014	003	002	MESA BOLIVAR
+528	014	003	003	MESA DE LAS PALMAS
+529	014	004	001	ARICAGUA
+530	014	004	002	SAN ANTONIO
+531	014	005	001	ARZOBISPO CHACÓN
+532	014	005	002	CAPURI
+533	014	005	003	CHACANTA
+534	014	005	004	EL MOLINO
+535	014	005	005	GUAIMARAL
+536	014	005	006	MUCUTUY
+537	014	005	007	MUCUCHACHI
+538	014	006	001	FERNANDEZ PEÑA
+539	014	006	002	MATRIZ
+540	014	006	003	MONTALBAN
+541	014	006	004	ACEQUIAS
+542	014	006	005	JAJI
+543	014	006	006	LA MESA
+544	014	006	007	SAN JOSE
+545	014	007	001	CARACCIOLO PARRA OLMEDO
+546	014	007	002	FLORENCIO RAMIREZ
+547	014	008	001	CARDENAL QUINTERO
+548	014	008	002	LAS PIEDRAS
+549	014	009	001	GUARAQUE
+550	014	009	002	MESA DE QUINTERO
+551	014	009	003	RIO NEGRO
+552	014	010	001	JULIO CÉSAR SALAS
+553	014	010	002	PALMIRA
+554	014	011	001	JUSTO BRICEÑO
+555	014	011	002	SAN CRISTOBAL DE TORONDOY
+556	014	012	001	ANTONIO SPINETTI DINI
+557	014	012	002	ARIAS
+558	014	012	003	CARACCIOLO PARRA PEREZ
+559	014	012	004	DOMINGO PEÑA
+560	014	012	005	EL LLANO
+561	014	012	006	GONZALO PICON FEBRES
+562	014	012	007	JACINTO PLAZA
+563	014	012	008	JUAN RODRIGUEZ SUAREZ
+564	014	012	009	LASSO DE LA VEGA
+565	014	012	010	MARIANO PICON SALAS
+566	014	012	011	MILLA
+567	014	012	012	OSUNA RODRIGUEZ
+568	014	012	013	SAGRARIO
+569	014	012	014	EL MORRO
+570	014	012	015	LOS NEVADOS
+571	014	013	001	MIRANDA
+572	014	013	002	ANDRES ELOY BLANCO
+573	014	013	003	LA VENTA
+574	014	013	004	PIÑANGO
+575	014	014	001	OBISPO RAMOS DE LORA
+576	014	014	002	ELOY PAREDES
+577	014	014	003	SAN RAFAEL DE ALCAZAR
+578	014	017	001	RANGEL
+579	014	017	002	CACUTE
+580	014	017	003	LA TOMA
+581	014	017	004	MUCURUBA
+582	014	017	005	SAN RAFAEL
+583	014	018	001	RIVAS DAVILA
+584	014	018	002	GERONIMO MALDONADO
+585	014	020	001	SUCRE
+586	014	020	002	CHIGUARA
+587	014	020	003	ESTANQUES
+588	014	020	004	LA TRAMPA
+589	014	020	005	PUEBLO NUEVO DEL SUR
+590	014	020	006	SAN JUAN
+591	014	021	001	EL AMPARO
+592	014	021	002	EL LLANO
+593	014	021	003	SAN FRANCISCO
+594	014	021	004	TOVAR
+595	014	022	001	TULIO FEBRES CORDERO
+596	014	022	002	INDEPENDENCIA
+597	014	022	003	MARIA DE LA CONCEPCION PALACIOS BLANCO
+598	014	022	004	SANTA POLONIA
+599	014	023	001	ZEA
+600	014	023	002	CAÑO EL TIGRE
+601	015	001	001	CAUCAGUA
+602	015	001	002	ARAGUITA
+603	015	001	003	AREVALO GONZALEZ
+604	015	001	004	CAPAYA
+605	015	001	005	EL CAFE
+606	015	001	006	MARIZAPA
+607	015	001	007	PANAQUIRE
+608	015	001	008	RIBAS
+609	015	002	001	SAN JOSE DE BARLOVENTO
+610	015	002	002	CUMBO
+611	015	003	001	BARUTA
+612	015	003	002	EL CAFETAL
+613	015	003	003	LAS MINAS DE BARUTA
+614	015	004	001	HIGUEROTE
+615	015	004	002	CURIEPE
+616	015	004	003	TACARIGUA
+617	015	005	001	MAMPORAL
+618	015	006	001	CARRIZAL
+619	015	007	001	CHACAO
+620	015	008	001	CHARALLAVE
+621	015	008	002	LAS BRISAS
+622	015	009	001	EL HATILLO
+623	015	010	001	LOS TEQUES
+624	015	010	002	ALTAGRACIA DE LA MONTAÑA
+625	015	010	003	CECILIO ACOSTA
+626	015	010	004	EL JARILLO
+627	015	010	005	PARACOTOS
+628	015	010	006	SAN PEDRO
+629	015	010	007	TACACTA
+630	015	011	001	SANTA TERESA DEL TUY
+631	015	011	002	EL CARTANAL
+632	015	012	001	OCUMARE DEL TUY
+633	015	012	002	LA DEMOCRACIA
+634	015	012	003	SANTA BARBARA
+635	015	013	001	SAN ANTONIO DE LOS ALTOS
+636	015	014	001	RIO CHICO
+637	015	014	002	EL GUAPO
+638	015	014	003	TACARIGUA DE LA LAGUNA
+639	015	014	004	PAPARO
+640	015	014	005	SAN FERNANDO DEL GUAPO
+641	015	015	001	SANTA LUCIA
+642	015	016	001	CUPIRA
+643	015	016	002	MACHURUCUTO
+644	015	017	001	GUARENAS
+645	015	018	001	SAN FRANCISCO DE YARE
+646	015	018	002	SAN ANTONIO DE YARE
+647	015	019	001	PETARE
+648	015	019	002	CAUCAGUITA
+649	015	019	003	FILAS DE MARICHES
+650	015	019	004	LA DOLORITA
+651	015	019	005	LEONCIO MARTINEZ
+652	015	020	001	CUA
+653	015	020	002	NUEVA CUA
+654	015	021	001	GUATIRE
+655	015	021	002	BOLIVAR
+656	016	001	001	ACOSTA
+657	016	001	002	SAN FRANCISCO
+658	016	004	001	CARIPE
+659	016	004	002	EL GUACHARO
+660	016	004	003	LA GUANOTA
+661	016	004	004	SABANA DE PIEDRA
+662	016	004	005	SAN AGUSTIN
+663	016	004	006	TERESEN
+664	016	005	001	CEDEÑO
+665	016	005	002	AREO
+666	016	005	003	SAN FELIX
+667	016	005	004	VIENTO FRESCO
+668	016	006	001	EZEQUIEL ZAMORA
+669	016	006	002	EL TEJERO
+670	016	007	001	LIBERTADOR
+671	016	007	002	CHAGUARAMAS
+672	016	007	003	LAS ALHUAACAS
+673	016	007	004	TABASCA
+674	016	008	001	MATURIN
+675	016	008	002	ALTO DE LOS GODOS
+676	016	008	003	BOQUERON
+677	016	008	004	LAS COCUIZAS
+678	016	008	005	SAN SIMON
+679	016	008	006	SANTA CRUZ
+680	016	008	007	EL COROZO
+681	016	008	008	EL FURRIAL
+682	016	008	009	JUSEPIN
+683	016	008	010	LA PICA
+684	016	008	011	SAN VICENTE
+685	016	009	001	PIAR
+686	016	009	002	APARICIO
+687	016	009	003	CHAGUARAMAL
+688	016	009	004	EL PINTO
+689	016	009	005	GUANAGUANA
+690	016	009	006	LA TOSCANA
+691	016	009	007	TAGUAYA
+692	016	010	001	PUNCERES
+693	016	010	002	CACHIPO
+694	016	012	001	SOTILLO
+695	016	012	002	LOS BARRANCOS DE FAJARDO
+696	017	003	001	DIAZ
+697	017	003	002	ZABALA
+698	017	004	001	GARCIA
+699	017	004	002	FRANCISCO FAJARDO
+700	017	005	001	GOMEZ
+701	017	005	002	BOLIVAR
+702	017	005	003	GUEVARA
+703	017	005	004	MATASIETE
+704	017	005	005	SUCRE
+705	017	006	001	MANEIRO
+706	017	006	002	AGUIRRE
+707	017	007	001	MARCANO
+708	017	007	002	ADRIAN
+709	017	009	001	PENINSULA DE MACANAO
+710	017	009	002	SAN FRANCISCO
+711	017	010	001	TUBORES
+712	017	010	002	LOS BARALES
+713	017	011	001	VILLALBA
+714	017	011	002	VICENTE FUENTES
+715	018	002	001	ARAURE
+716	018	002	002	RIO ACARIGUA
+717	018	003	001	ESTELLER
+718	018	003	002	UVERAL
+719	018	004	001	GUANARE
+720	018	004	002	CORDOBA
+721	018	004	003	SAN JOSE DE LA MONTAÑA
+722	018	004	004	SAN JUAN DE GUANAGUANARE
+723	018	004	005	VIRGEN DE LA COROMOTO
+724	018	005	001	GUANARITO
+725	018	005	002	TRINIDAD DE LA CAPILLA
+726	018	005	003	DIVINA PASTORA
+727	018	006	001	MONSEÑOR JOSÉ VICENTE DE UNDA
+728	018	006	002	PEÑA BLANCA
+729	018	007	001	OSPINO
+730	018	007	002	APARICION
+731	018	007	003	LA ESTACION
+732	018	008	001	PAEZ
+733	018	008	002	PAYARA
+734	018	008	003	PIMPINELA
+735	018	008	004	RAMON PERAZA
+736	018	009	001	PAPELON
+737	018	009	002	CAÑO DELGADITO
+738	018	010	001	SAN GENARO DE BOCONOITO
+739	018	010	002	ANTOLIN TOVAR
+740	018	011	001	SAN RAFAEL DE ONOTO
+741	018	011	002	SANTA FE
+742	018	011	003	THERMO MORLES
+743	018	012	001	SANTA ROSALIA
+744	018	012	002	FLORIDA
+745	018	013	001	SUCRE
+746	018	013	002	CONCEPCION
+747	018	013	003	SAN RAFAEL DE PALO ALZAO
+748	018	013	004	UVENCIO ANTONIO VELASQUEZ
+749	018	013	005	SAN JOSE DE SAGUAZ
+750	018	013	006	VILLA ROSA
+751	018	014	001	TUREN
+752	018	014	002	CANELONES
+753	018	014	003	SANTA CRUZ
+754	018	014	004	SAN ISIDRO LABRADOR
+755	019	001	001	MARIÑO
+756	019	001	002	ROMULO GALLEGOS
+757	019	002	001	SAN JOSE DE AEROCUAR
+758	019	002	002	TAVERA ACOSTA
+759	019	003	001	RIO CARIBE
+760	019	003	002	ANTONIO JOSE DE SUCRE
+761	019	003	003	EL MORRO DE PUERTO SANTO
+762	019	003	004	PUERTO SANTO
+763	019	003	005	SAN JUAN DE LAS GALDONAS
+764	019	004	001	EL PILAR
+765	019	004	002	EL RINCON
+766	019	004	003	GRAL FRANCISCO ANTONIO VASQUEZ
+767	019	004	004	GUARAUNOS
+768	019	004	005	TUNAPUICITO
+769	019	004	006	UNION
+770	019	005	001	BOLIVAR
+771	019	005	002	MACARAPANA
+772	019	005	003	SANTA CATALINA
+773	019	005	004	SANTA ROSA
+774	019	005	005	SANTA TERESA
+775	019	007	001	YAGUARAPARO
+776	019	007	002	EL PAUJIL
+777	019	007	003	LIBERTAD
+778	019	008	001	AYARA
+779	019	008	002	CHACOPACA
+780	019	008	003	MANICUARE
+781	019	009	001	TUNAPUY
+782	019	009	002	CAMPO ELIAS
+783	019	010	001	IRAPA
+784	019	010	002	CAMPO CLARO
+785	019	010	003	MARABAL
+786	019	010	004	SAN ANTONIO DE IRAPA
+787	019	010	005	SORO
+788	019	012	001	CUMANACOA
+789	019	012	002	ARENAS
+790	019	012	003	ARICAGUA
+791	019	012	004	COCOLLAR
+792	019	012	005	SAN FERNANDO
+793	019	012	006	SAN LORENZO
+794	019	013	001	CARIACO
+795	019	013	002	CATUARO
+796	019	013	003	RENDON
+797	019	013	004	SANTA CRUZ
+798	019	013	005	SANTA MARIA
+799	019	014	001	ALTAGRACIA
+800	019	014	002	AYACUCHO
+801	019	014	003	SANTA INES
+802	019	014	004	VALENTIN VALIENTE
+803	019	014	005	SAN JUAN
+804	019	014	006	RAUL LEONI
+805	019	014	007	SANTA FE
+806	019	015	001	GUIRIA
+807	019	015	002	BIDEAU
+808	019	015	003	CRISTOBAL COLON
+809	019	015	004	PUNTA DE PIEDRA
+810	020	003	001	AYACUYO
+811	020	003	002	RIVAS BERTI
+812	020	003	003	SAN PEDRO DEL RIO
+813	020	004	001	BOLIVAR
+814	020	004	002	PALOTAL
+815	020	004	003	GENERAL JUAN VICENTE GOMEZ
+816	020	004	004	ISAIAS MEDINA ANGARITA
+817	020	005	001	CARDENAS
+818	020	005	002	AMENODORO RANGEL LAMUS
+819	020	005	003	LA FLORIDA
+820	020	007	001	FERNANDEZ FEO
+821	020	007	002	ALBERTO ADRIANI
+822	020	007	003	SANTO DOMINGO
+823	020	009	001	GARCÍA DE HEVIA
+824	020	009	002	BOCA DE GRITA
+825	020	009	003	JOSE ANTONIO PAEZ
+826	020	011	001	INDEPENDENCIA
+827	020	011	002	JUAN GERMAN ROSCIO
+828	020	011	003	ROMAN CARDENAS
+829	020	012	001	JÁUREGUI
+830	020	012	002	EMILIO CONSTANTINO GUERRERO
+831	020	012	003	MONSEÑOR MIGUEL ANTONIO SALAS
+832	020	014	001	JUNIN
+833	020	014	002	LA PETROLEA
+834	020	014	003	QUINIMARI
+835	020	014	004	BRAMON
+836	020	015	001	LIBERTAD
+837	020	015	002	CIPRIANO CASTRO
+838	020	015	003	MANUEL FELIPE RUGELES
+839	020	016	001	LIBERTADOR
+840	020	016	002	EMETERIO OCHOA
+841	020	016	003	DORADAS
+842	020	016	004	SAN JOAQUIN DE NAVAY
+843	020	017	001	LOBATERA
+844	020	017	002	CONSTITUCION
+845	020	019	001	PANAMERICANO
+846	020	019	002	LA PALMITA
+847	020	020	001	PEDRO MARIA OREÑA
+848	020	020	002	NUEVA ARCADIA
+849	020	022	001	SAMUEL DARIO MALDONADO
+850	020	022	002	BOCONO
+851	020	022	003	HERNANDEZ
+852	020	023	001	LA CONCORDIA
+853	020	023	002	PEDRO MARIA MORANTES
+854	020	023	003	SAN JUAN BAUTISTA
+855	020	023	004	SAN SEBASTIAN
+856	020	023	005	DR FRANCISCO ROMERO LOBO
+857	020	026	001	MUNICIPIO CAPITAL SUCRE
+858	020	026	002	ELEAZAR LOPEZ CONTRERAS
+859	020	026	003	SAN PABLO
+860	020	028	001	MUNICIPIO CAPITAL URIBANTE
+861	020	028	002	CARDENAS
+862	020	028	003	JUAN PABLO PEÑALOZA
+863	020	028	004	POTOSI
+864	021	001	001	SANTA ISABEL
+865	021	001	002	EL ARAGUANEY
+866	021	001	003	EL JAGUITO
+867	021	001	004	LA ESPERANZA
+868	021	002	001	BOCONO
+869	021	002	002	EL CARMEN
+870	021	002	003	MOSQUEY
+871	021	002	004	AYACUCHO
+872	021	002	005	BURBUSAY
+873	021	002	006	GENERAL RIVAS
+874	021	002	007	GUARAMACAL
+875	021	002	008	LA VEGA DE GUARAMACAL
+876	021	002	009	MONSEÑOR JAUREGUI
+877	021	002	010	RAFAEL RANGEL
+878	021	002	011	SAN MIGUEL
+879	021	002	012	SAN JOSE
+880	021	003	001	SABANA GRANDE
+881	021	003	002	CHEREGUE
+882	021	003	003	GRANADOS
+883	021	004	001	CHEJENDE
+884	021	004	002	ARNOLDO GABALDON
+885	021	004	003	BOLIVIA
+886	021	004	004	CARRILLO
+887	021	004	005	CEGARRA
+888	021	004	006	MANUEL SALVADOR ULLOA
+889	021	004	007	SAN JOSE
+890	021	005	001	CARACHE
+891	021	005	002	CUICAS
+892	021	005	003	LA CONCEPCION
+893	021	005	004	PANAMERICANA
+894	021	005	005	SANTA CRUZ
+895	021	006	001	ESCUQUE
+896	021	006	002	LA UNION
+897	021	006	003	SABANA LIBRE
+898	021	006	004	SANTA RITA
+899	021	007	001	EL SOCORRO
+900	021	007	002	ANTONIO JOSE DE SUCRE
+901	021	007	003	LOS CAPRICHOS
+902	021	008	001	CAMPO ELIAS
+903	021	008	002	ARNOLDO GABALDON
+904	021	009	001	SANTA APOLONIA
+905	021	009	002	EL PROGRESO
+906	021	009	003	LA CEIBA
+907	021	009	004	TRES DE FEBRERO
+908	021	010	001	EL DIVIDIVE
+909	021	010	002	AGUA SANTA
+910	021	010	003	AGUA CALIENTE
+911	021	010	004	EL CENIZO
+912	021	010	005	VALERITA
+913	021	011	001	MONTE CARMELO
+914	021	011	002	BUENA VISTA
+915	021	011	003	SANTA MARIA DEL HORCON
+916	021	012	001	MOTATAN
+917	021	012	002	EL BAÑO
+918	021	012	003	JALISCO
+919	021	013	001	PAMPAN
+920	021	013	002	FLOR DE PATRIA
+921	021	013	003	LA PAZ
+922	021	013	004	SANTA ANA
+923	021	014	001	PAMPANITO
+924	021	014	002	LA CONCEPCION
+925	021	014	003	PAMPANITO II
+926	021	015	001	BETIJOQUE
+927	021	015	002	LA PUEBLITA
+928	021	015	003	LOS CEDROS
+929	021	015	004	JOSE GREGORIO HERNANDEZ
+930	021	016	001	CARVAJAL
+931	021	016	002	ANTONIO NICOLAS BRICEÑO
+932	021	016	003	CAMPO ALEGRE
+933	021	016	004	JOSE LEONARDO SUAREZ
+934	021	017	001	SABANA DE MENDOZA
+935	021	017	002	EL PARAISO
+936	021	017	003	JUNIN
+937	021	017	004	VALMORE RODRIGUEZ
+938	021	018	001	ANDRES LINAREZ
+939	021	018	002	CHIQUINQUIRA
+940	021	018	003	CRISTOBAL MENDOZA
+941	021	018	004	CRUZ CARRILLO
+942	021	018	005	MATRIZ
+943	021	018	006	MONSEÑOR CARRILLO
+944	021	018	007	TRES ESQUINAS
+945	021	019	001	LA QUEBRADA
+946	021	019	002	CABIMBU
+947	021	019	003	JAJO
+948	021	019	004	LA MESA
+949	021	019	005	SANTIAGO
+950	021	019	006	TUÑAME
+951	021	020	001	JUAN IGNACIO MONTILLA
+952	021	020	002	BEATRIZ
+953	021	020	003	MERCEDES DIAZ
+954	021	020	004	SAN LUIS 3
+955	021	020	005	LA PUERTA
+956	021	020	006	MENDOZA
+957	022	003	001	BRUZUAL
+958	022	003	002	CAMPO ELIAS
+959	022	009	001	NIRGUA
+960	022	009	002	SALOM
+961	022	009	003	TEMERLA
+962	022	010	001	PEÑA
+963	022	010	002	SAN ANDRES
+964	022	011	001	SAN FELIPE
+965	022	011	002	ALBARICO
+966	022	011	003	SAN JAVIER
+967	022	014	001	VEROES
+968	022	014	002	EL GUAYABO
+969	023	001	001	ISLA DE TOAS
+970	023	001	002	MONAGAS
+971	023	002	001	SAN TIMOTEO
+972	023	002	002	GENERAL URDANETA
+973	023	002	003	LIBERTADOR
+974	023	002	004	MANUEL GUANIPA MATOS
+975	023	002	005	MARCELINO BRICEÑO
+976	023	002	006	PUEBLO NUEVO
+977	023	003	001	AMBROSIO
+978	023	003	002	CARMEN HERRERA
+979	023	003	003	GERMAN RIOS LINARES
+980	023	003	004	LA ROSA
+981	023	003	005	JORGE HERNANDEZ
+982	023	003	006	ROMULO BETANCOURT
+983	023	003	007	SAN BENITO
+984	023	003	008	ARISTIDES CALVANI
+985	023	003	009	PUNTA GORDA
+986	023	004	001	ENCONTRADOS
+987	023	004	002	UDON PEREZ
+988	023	005	001	SAN CARLOS DEL ZULIA
+989	023	005	002	MORALITO
+990	023	005	003	SANTA BARBARA
+991	023	005	004	SANTA CRUZ DEL ZULIA
+992	023	005	005	URRIBARRI
+993	023	006	001	SIMON RODRIGUEZ
+994	023	006	002	CARLOS QUEVEDO
+995	023	006	003	FRANCISCO JAVIER PULGAR
+996	023	007	001	LA CONCEPCION
+997	023	007	002	JOSE RAMON YEPEZ
+998	023	007	003	MARIANO PARRA LEON
+999	023	007	004	SAN JOSE
+1000	023	008	001	JESUS MARIA SEMPRUN
+1001	023	008	002	BARI
+1002	023	009	001	CONCEPCION
+1003	023	009	002	ANDRES BELLO
+1004	023	009	003	CHIQUINQUIRA
+1005	023	009	004	EL CARMELO
+1006	023	009	005	POTRERITOS
+1007	023	010	001	ALONSO DE OJEDA
+1008	023	010	002	LIBERTAD
+1009	023	010	003	CAMPO LARA
+1010	023	010	004	ELEAZAR LOPEZ CONTRERAS
+1011	023	010	005	VENEZUELA
+1012	023	011	001	LIBERTAD
+1013	023	011	002	BARTOLOME DE LAS CASAS
+1014	023	011	003	RIO NEGRO
+1015	023	011	004	SAN JOSE DE PERIJA
+1016	023	012	001	SAN RAFAEL
+1017	023	012	002	LA SIERRITA
+1018	023	012	003	LAS PARCELAS
+1019	023	012	004	LUIS DE VICENTE
+1020	023	012	005	MONSEÑOR MARCOS SERGIO GODOY
+1021	023	012	006	RICAURTE
+1022	023	012	007	TAMARE
+1023	023	013	001	ANTONIO BORJAS ROMERO
+1024	023	013	002	BOLIVAR
+1025	023	013	003	CACIQUE MARA
+1026	023	013	004	CARACCIOLO PARRA PEREZ
+1027	023	013	005	CECILIO ACOSTA
+1028	023	013	006	CRISTO DE ARANZA
+1029	023	013	007	COQUIVACOA
+1030	023	013	008	CHIQUINQUIRA
+1031	023	013	009	FRANCISCO EUGENIO BUSTAMANTE
+1032	023	013	010	IDELFONSO VASQUEZ
+1033	023	013	011	JUANA DE AVILA
+1034	023	013	012	LUIS HURTADO HIGUERA
+1035	023	013	013	MANUEL DAGNINO
+1036	023	013	014	OLEGARIO VILLALOBOS
+1037	023	013	015	RAUL LEONI
+1038	023	013	016	SANTA LUCIA
+1039	023	013	017	VENANCIO PULGAR
+1040	023	013	018	SAN ISIDRO
+1041	023	014	001	ALTAGRACIA
+1042	023	014	002	ANA MARIA CAMPOS
+1043	023	014	003	FARIA
+1044	023	014	004	SAN ANTONIO
+1045	023	014	005	SAN JOSE
+1046	023	015	001	SINAMAICA
+1047	023	015	002	ALTA GUAJIRA
+1048	023	015	003	ELIAS SANCHEZ RUBIO
+1049	023	015	004	GUAJIRA
+1050	023	016	001	EL ROSARIO
+1051	023	016	002	DONALDO GARCIA
+1052	023	016	003	SIXTO ZAMBRANO
+1053	023	017	001	SAN FRANCISCO
+1054	023	017	002	EL BAJO
+1055	023	017	003	DOMITILA FLORES
+1056	023	017	004	FRANCISCO OCHOA
+1057	023	017	005	LOS CORTIJOS
+1058	023	017	006	MARCIAL HERNANDEZ
+1059	023	018	001	SANTA RITA
+1060	023	018	002	EL MENE
+1061	023	018	003	JOSE CENOVIO URRIBARRI
+1062	023	018	004	PEDRO LUCAS URRIBARRI
+1063	023	019	001	MANUEL MANRIQUE
+1064	023	019	002	RAFAEL MARIA BARALT
+1065	023	019	003	RAFAEL URDANETA
+1066	023	020	001	BOBURES
+1067	023	020	002	EL BATEY
+1068	023	020	003	GIBRALTAR
+1069	023	020	004	HERAS
+1070	023	020	005	MONSEÑOR ARTURO CELESTINO ALVAREZ
+1071	023	020	006	ROMULO GALLEGOS
+1072	023	021	001	LA VICTORIA
+1073	023	021	002	RAFAEL URDANETA
+1074	023	021	003	RAUL CUENCA
+1075	024	001	001	CARABALLERA
+1076	024	001	002	CARAYACA
+1077	024	001	003	CARUAO
+1078	024	001	004	CATIA LA MAR
+1079	024	001	005	EL JUNKO
+1080	024	001	006	LA GUAIRA
+1081	024	001	007	MACUTO
+1082	024	001	008	MAIQUETIA
+1083	024	001	009	NAIGUATA
+1084	024	001	010	RAUL LEONI
+1085	024	001	011	CARLOS SOUBLETTE
+1086	025	001	001	GRAN ROQUE
+1087	025	001	002	MADRISQUI(MADRISQUE - CAYO RATA)
+1088	025	001	003	FRANCISQUI DEL NORTE
+1089	025	001	004	FRANCISQUI DEL SUR O CAYO REFUGIO
+1090	025	001	005	CAYO PIRATA
+1091	025	001	006	CRASQUI
+1092	025	001	007	RASQUI
+1093	025	001	008	AGUISTIN O PRESTONQUI
+1094	025	001	009	CAYO LOCO O PORQUI
+1095	025	001	010	BOTOQUI
+1096	025	001	011	SAMQUI
+1097	025	001	012	BURQUI
+1098	025	001	013	CAYO CARENERO
+1099	025	001	014	CAYO FERNANDO
+1100	025	001	015	MOSQUISES NORTE
+1101	025	001	016	MOSQUISES SUR (F.C.L.R)
+1102	025	001	017	PELONA DE DOS MOSQUISES
+1103	025	001	018	VESPEN O CAYO SAL
+1104	025	001	019	BOCA DE COTE
+1105	025	001	020	BAJO DE BOTUTO
+1106	025	002	001	TESTIGOS GRANDES
+1107	025	002	002	IGUANA
+1108	025	003	001	BORRACHA
+1109	025	003	002	CHIMANA GRANDE
+1110	025	003	003	CHIMANA DEL OESTE
+1111	025	003	004	CHIMANA DEL SUR
+1112	025	003	005	BURRO
+1113	025	003	006	VARADERO
+1114	025	003	007	MONOS
+1115	025	003	008	PICUDA GRANDE
+1116	025	004	001	BLANQUILLA, LA
+1117	025	005	001	MORRO DE LA PECHA(PUERTO REAL)
+1118	025	006	001	PATOS (ISLA DE)
+1119	025	007	001	PIRITU (ADENTRO)
+\.
+
+
+--
+-- Name: parroquias_idpar_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('parroquias_idpar_seq', 1119, true);
+
+
+--
+-- Name: prioridad_cod_prioridad_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('prioridad_cod_prioridad_seq', 2, true);
+
+
+--
+-- Data for Name: prioridades; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY prioridades (cod_prioridad, descripcion_prioridad) FROM stdin;
+\.
+
+
+--
+-- Data for Name: solicitantes; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY solicitantes (cedula_rif, cod_tipo_solicitante, nombre_solicitante, sexo_solicitante, fecha_nac, direccion_habitacion, telefono_fijo, telefono_movil, email) FROM stdin;
+\.
+
+
+--
+-- Data for Name: ticket; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY ticket (cod_ticket, cedula_rif, cod_comunidad, cod_prioridad, cod_estado, cod_tramite_unidad, descripcion_tiket, fecha_registro, monto_solicitud, persona_contacto_dep) FROM stdin;
+\.
+
+
+--
+-- Name: ticket_cod_ticket_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('ticket_cod_ticket_seq', 1, true);
+
+
+--
+-- Name: tipo_solicitante_cod_tipo_solicitante_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('tipo_solicitante_cod_tipo_solicitante_seq', 3, true);
+
+
+--
+-- Data for Name: tipo_solicitantes; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY tipo_solicitantes (cod_tipo_solicitante, descripcion_tipo_solicitante) FROM stdin;
+3	Profesional
+\.
+
+
+--
+-- Data for Name: tramite; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY tramite (cod_tramite, cod_categoria, nombre_tramite, descripcion_tramite) FROM stdin;
+\.
+
+
+--
+-- Name: tramite_cod_tramite_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('tramite_cod_tramite_seq', 1, true);
+
+
+--
+-- Data for Name: tramite_unidad; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY tramite_unidad (cod_tramite_unidad, cod_unidad, cod_tramite) FROM stdin;
+\.
+
+
+--
+-- Name: tramite_unidad_cod_tramite_unidad_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('tramite_unidad_cod_tramite_unidad_seq', 1, true);
+
+
+--
+-- Data for Name: unidades; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY unidades (cod_unidad, siglas_unidad, nombre_unidad, responsable_unidad, cargo_responsable, direccion_unidad, telefono_1, telefono_2, email_unidad, horario_unidad) FROM stdin;
+2	ctsi	Coordinación de Tecnología y Servicios de Informac	eulicer	Coordinador	UNELLEZ-Mesa de Cavaca	123	456	aperaza17@yahoo.es	8-12
+\.
+
+
+--
+-- Name: unidades_cod_unidad_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('unidades_cod_unidad_seq', 2, true);
+
+
+--
+-- Data for Name: usuarios; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY usuarios (cedula_usuario, nombre_usuario, apellido_usuario, usuario, pass, nivel_acceso, status, fec_ult_acceso) FROM stdin;
+11398755	Yenny	Rivero	yrivero	11398755	1	1	2014-11-10
+11395397	Alcides C.	Peraza R.	aperaza17	d6426956ffea7efa67e0b78f67b999a4	1	1	2014-11-14
+\.
+
+
+--
+-- Data for Name: visitcounter; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY visitcounter (id, tm, ip) FROM stdin;
+1	1415391014	127.0.0.1
+2	1415394987	127.0.0.1
+4	1421784468	::1
+2	1421791526	::1
+3	1421855028	127.0.0.1
+4	1421868369	172.19.1.136
+5	1421869753	127.0.0.1
+6	1421875149	127.0.0.1
+7	1421934961	127.0.0.1
+8	1421943450	127.0.0.1
+9	1421945589	172.19.1.136
+10	1421952944	127.0.0.1
+11	1421958297	127.0.0.1
+12	1421963623	172.19.1.136
+13	1422025541	127.0.0.1
+14	1422031168	127.0.0.1
+15	1422040856	127.0.0.1
+16	1422043513	::1
+\.
+
+
+--
+-- Name: visitcounter_id_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('visitcounter_id_seq', 16, true);
+
+
+--
+-- Name: comunidades_pkey; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY comunidades
+    ADD CONSTRAINT comunidades_pkey PRIMARY KEY (idcomunidad);
+
+
+--
+-- Name: estados_idest; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY estados
+    ADD CONSTRAINT estados_idest PRIMARY KEY (idest);
+
+
+--
+-- Name: municipios_idmun; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY municipios
+    ADD CONSTRAINT municipios_idmun PRIMARY KEY (idmun);
+
+
+--
+-- Name: parroquias_pkey; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY parroquias
+    ADD CONSTRAINT parroquias_pkey PRIMARY KEY (codest, codmun, codpar);
+
+
+--
+-- Name: pk_categoria; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY categorias
+    ADD CONSTRAINT pk_categoria PRIMARY KEY (cod_categoria);
+
+
+--
+-- Name: pk_estados_tramite; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY estados_tramites
+    ADD CONSTRAINT pk_estados_tramite PRIMARY KEY (cod_estado_tramite);
+
+
+--
+-- Name: pk_prioridad; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY prioridades
+    ADD CONSTRAINT pk_prioridad PRIMARY KEY (cod_prioridad);
+
+
+--
+-- Name: pk_solicitante; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY solicitantes
+    ADD CONSTRAINT pk_solicitante PRIMARY KEY (cedula_rif);
+
+
+--
+-- Name: pk_ticket; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY ticket
+    ADD CONSTRAINT pk_ticket PRIMARY KEY (cod_ticket);
+
+
+--
+-- Name: pk_tipo_solicitante; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY tipo_solicitantes
+    ADD CONSTRAINT pk_tipo_solicitante PRIMARY KEY (cod_tipo_solicitante);
+
+
+--
+-- Name: pk_tramite; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY tramite
+    ADD CONSTRAINT pk_tramite PRIMARY KEY (cod_tramite);
+
+
+--
+-- Name: pk_tramite_unidad; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY tramite_unidad
+    ADD CONSTRAINT pk_tramite_unidad PRIMARY KEY (cod_tramite_unidad);
+
+
+--
+-- Name: pk_unidades; Type: CONSTRAINT; Schema: public; Owner: alcides; Tablespace: 
+--
+
+ALTER TABLE ONLY unidades
+    ADD CONSTRAINT pk_unidades PRIMARY KEY (cod_unidad);
+
+
+--
+-- Name: estados_codest; Type: INDEX; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE INDEX estados_codest ON estados USING btree (codest);
+
+
+--
+-- Name: municipios_codest; Type: INDEX; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE INDEX municipios_codest ON municipios USING btree (codest);
+
+
+--
+-- Name: municipios_codmun; Type: INDEX; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE INDEX municipios_codmun ON municipios USING btree (codmun);
+
+
+--
+-- Name: parroquias_codest; Type: INDEX; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE INDEX parroquias_codest ON parroquias USING btree (codest);
+
+
+--
+-- Name: parroquias_codmun; Type: INDEX; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE INDEX parroquias_codmun ON parroquias USING btree (codmun);
+
+
+--
+-- Name: parroquias_codpar; Type: INDEX; Schema: public; Owner: alcides; Tablespace: 
+--
+
+CREATE INDEX parroquias_codpar ON parroquias USING btree (codpar);
+
+
+--
+-- Name: fk_solicita_reference_tipo_sol; Type: FK CONSTRAINT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY solicitantes
+    ADD CONSTRAINT fk_solicita_reference_tipo_sol FOREIGN KEY (cod_tipo_solicitante) REFERENCES tipo_solicitantes(cod_tipo_solicitante) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: fk_ticket_reference_estados_; Type: FK CONSTRAINT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY ticket
+    ADD CONSTRAINT fk_ticket_reference_estados_ FOREIGN KEY (cod_estado) REFERENCES estados_tramites(cod_estado_tramite) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: fk_ticket_reference_priorida; Type: FK CONSTRAINT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY ticket
+    ADD CONSTRAINT fk_ticket_reference_priorida FOREIGN KEY (cod_prioridad) REFERENCES prioridades(cod_prioridad) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: fk_ticket_reference_solicita; Type: FK CONSTRAINT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY ticket
+    ADD CONSTRAINT fk_ticket_reference_solicita FOREIGN KEY (cedula_rif) REFERENCES solicitantes(cedula_rif) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: fk_ticket_reference_tramite_; Type: FK CONSTRAINT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY ticket
+    ADD CONSTRAINT fk_ticket_reference_tramite_ FOREIGN KEY (cod_tramite_unidad) REFERENCES tramite_unidad(cod_tramite_unidad) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: fk_tramite__reference_tramite; Type: FK CONSTRAINT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY tramite_unidad
+    ADD CONSTRAINT fk_tramite__reference_tramite FOREIGN KEY (cod_tramite) REFERENCES tramite(cod_tramite) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: fk_tramite__reference_unidades; Type: FK CONSTRAINT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY tramite_unidad
+    ADD CONSTRAINT fk_tramite__reference_unidades FOREIGN KEY (cod_unidad) REFERENCES unidades(cod_unidad) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: fk_tramite_reference_categori; Type: FK CONSTRAINT; Schema: public; Owner: alcides
+--
+
+ALTER TABLE ONLY tramite
+    ADD CONSTRAINT fk_tramite_reference_categori FOREIGN KEY (cod_categoria) REFERENCES categorias(cod_categoria) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

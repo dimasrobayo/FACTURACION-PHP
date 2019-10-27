@@ -1,0 +1,33 @@
+<?php 
+    //  Autentificator
+    //  Gesti� de Usuarios PHP+Mysql
+    //  by Pedro Noves V. (Cluster) adaptado a postgres por dimas robayo
+    //  clus@hotpop.com
+    //  ------------------------------
+
+    // Configuracion
+
+    // Nombre de la session (puede dejar este mismo)
+    $usuarios_sesion="autenticador_sac";
+
+    // Datos conexion a la Base de datos (MySql)
+    $sql_host="localhost";  // Host, nombre del servidor o IP del servidor Mysql.
+    $sql_usuario="dimas";        // Usuario de Mysql
+    $sql_pass="hannah3868";           // contrase� de Mysql
+    $sql_db="sac";     // Base de datos que se usar�
+    $sql_tabla="usuarios"; // Nombre de la tabla que contendr�los datos de los usuarios
+    $sistema_name="SAC"; // Nombre de la empresa
+    $empresa="Gobernación del Estado Portuguesa"; // Nombre de la empresa
+    $enlace_logo="http://www.gobiernodeportuguesa.gob.ve"; // Nombre de la empresa
+    
+    // Datos de localidad
+    $cod_pais='058';
+    $cod_estado='018';
+    $cod_municipio='004';
+    
+    $send_sms=0;    // Activar el envio de sms al Usuario
+    $send_email=1;    // Activar el envio de email al Usuario
+    $ip_server="200.11.228.3"; // Ip Servidor de Alojamiento
+    $dir_name="sac"; // Nombre del Directorio de Alojamiento del Sistema
+    
+?>

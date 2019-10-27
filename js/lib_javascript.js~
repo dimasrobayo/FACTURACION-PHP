@@ -1,0 +1,308 @@
+//-------------------------------------------------------------------------------------------------//
+//-----------------------------------funciones para los formularios -------------------------------//
+//-------------------------------------------------------------------------------------------------//
+var cursor;
+if (document.all) {
+// Está utilizando EXPLORER
+cursor='hand';
+} else {
+// Está utilizando MOZILLA/NETSCAPE
+cursor='pointer';
+}
+
+function setFocus() 
+{
+	document.loginForm.user.select();
+	document.loginForm.user.focus();
+}
+	
+
+function verinsertados(){
+	var contenedor;
+	contenedor = document.getElementById('div_datos');
+	ajax=nuevoAjax();
+	ajax.open("GET", "procesos.php?ver=1",true);
+	ajax.onreadystatechange=function(){
+		if (ajax.readyState==4){
+		   contenedor.innerHTML = ajax.responseText
+		}
+	}
+	ajax.send(null)
+}
+		
+		
+		
+function validarexiste(){
+	var d1,contenedor;
+	contenedor = document.getElementById('validar');
+	d1 = document.QForm.cedula_pac.value;
+	d2=location.href;
+	ajax=nuevoAjax();
+	ajax.open("GET", "procesos.php?valcodigo="+d1+"&dir="+d2,true);
+	ajax.onreadystatechange=function(){
+		if (ajax.readyState==4){
+		   contenedor.innerHTML = ajax.responseText
+		}
+	}
+	ajax.send(null)
+}
+		
+function cargarsubprograma(){
+	var d1,d2,contenedor;
+	contenedor = document.getElementById('contenedor_subprograma');
+	d1 = document.QForm.id_programa.options[document.QForm.id_programa.selectedIndex].value;
+	d2=location.href;
+	ajax=nuevoAjax();
+	ajax.open("GET", "procesos.php?accion=subprograma&idprograma="+d1+"&dir="+d2,true);
+	ajax.onreadystatechange=function(){
+		if (ajax.readyState==4){
+			contenedor.innerHTML = ajax.responseText
+		}
+	}
+	ajax.send(null)
+}					
+		
+function cargarContenidoMunicipio(){
+	var d1,contenedor;
+	contenedor = document.getElementById('contenedor2');
+	d1 = document.QForm.codest.options[document.QForm.codest.selectedIndex].value;
+	d2=location.href;
+	ajax=nuevoAjax();
+	ajax.open("GET", "procesos.php?codest="+d1+"&dir="+d2,true);
+	ajax.onreadystatechange=function(){
+		if (ajax.readyState==4){
+			contenedor.innerHTML = ajax.responseText
+		}
+	}
+	ajax.send(null)
+}		
+		
+function cargarContenidoParroquia(){
+	var d1,d2,d3,contenedor;
+	contenedor = document.getElementById('contenedor3');
+	d1 = document.QForm.codmun.options[document.QForm.codmun.selectedIndex].value;
+	d2 = document.QForm.codest.value;
+	d3=location.href;
+	ajax=nuevoAjax();
+	ajax.open("GET", "procesos.php?codmun="+d1+"&codestado="+d2+"&dir="+d3,true);
+	ajax.onreadystatechange=function(){
+		if (ajax.readyState==4){
+			contenedor.innerHTML = ajax.responseText
+		}
+	}
+	ajax.send(null)
+}	
+
+
+function ventanaanalisis() //esta es la funcion para abrir el catalogo de conceptos para facturar.
+{
+    miPopup = window.open("precios/catalogo_concepto.php","miwin","width=1100,height=500,scrollbars=yes");
+    miPopup.focus();
+
+}
+
+function ventanaanalisis2() //esta es la funcion para abrir el catalogo de conceptos para facturar.
+{
+    miPopup = window.open("muestras/catalogo_concepto.php","miwin","width=1100,height=500,scrollbars=yes");
+    miPopup.focus();
+
+}
+
+function ventanaconceptos() //esta es la funcion para abrir el catalogo de conceptos para facturar.
+{
+    cedula_usuario  = facturacion.cedula_usuario.value; 
+    miPopup = window.open("precios/catalogo_concepto.php","miwin","width=1100,height=500,scrollbars=yes");
+    miPopup.focus();
+
+    if (cedula_usuario ==""){
+        alert("Debe Identificar al Solicitante Antes de Agregar un Concepto !!!");
+    }
+}
+
+function ventanacliente() //esta es la funcion para abrir el catalogo de clientes para facturar.
+{
+    miPopup = window.open("presupuestos/catalogo_cliente.php","miwin","width=1100,height=500,scrollbars=yes");
+    miPopup.focus();
+}
+
+function ventanaanalisiscliente() //esta es la funcion para abrir el catalogo de clientes para facturar.
+{
+    miPopup = window.open("muestras/catalogo_cliente_analisis.php","miwin","width=1100,height=500,scrollbars=yes");
+    miPopup.focus();
+}
+
+function actualizar_importe()
+{
+    var precio=document.getElementById("precio").value;
+    var cantidad=document.getElementById("cantidad").value;
+    total=precio*cantidad; //aqui es donde se ase el calculo de la 
+    var original=parseFloat(total);
+    document.getElementById("total").value=original.toFixed(2);
+}
+
+function validar() 
+{
+    var mensaje="";
+    var entero=0;
+    var cant=0;
+
+    if (document.getElementById("id_parametro").value=="") mensaje="  - Codigo Concepto\n";
+    if (document.getElementById("parametro").value=="") mensaje+="  - Descripcion\n";
+    entero=parseInt(document.getElementById("cantidad").value);
+    cant=parseFloat(document.getElementById("cantidad").value);
+    
+    if (document.getElementById("precio").value=="") { 
+       mensaje+="  - Falta el precio\n"; 
+    } else {
+        if (isNaN(document.getElementById("precio").value)==true) {
+                mensaje+="  - El precio debe ser numerico\n";
+        }
+    }
+    if (document.getElementById("cantidad").value==""){ 
+        mensaje+="  - Falta la cantidad\n";
+    }else {
+        if (isNaN(entero)==true) {
+                mensaje+="  - La cantidad debe ser numerica\n";
+        }
+    }
+    if (cant < 1){
+        mensaje+="  - La cantidad debe ser diferente de 0(Cero)\n";
+    }
+
+    if (document.getElementById("total").value=="") mensaje+="  - Falta el total\n";
+
+    if (mensaje!="") {
+            alert("Atencion, se han detectado los siguientes Errores:\n\n"+mensaje);
+    } else {
+            document.getElementById("subtotal").value=parseFloat(document.getElementById("subtotal").value) + parseFloat(document.getElementById("total").value);	
+            cambio_iva();
+            document.getElementById("formulario_lineas").submit();
+            document.getElementById("id_parametro").value="";
+            document.getElementById("parametro").value="";
+            document.getElementById("precio").value="";
+            document.getElementById("cantidad").value=1;
+            document.getElementById("total").value="";
+    }
+}
+
+function cambio_iva() {
+        var original=parseFloat(document.getElementById("subtotal").value);
+        var result=Math.round(original*100)/100 ;
+        document.getElementById("subtotal").value=result.toFixed(2);
+
+        document.getElementById("totalimpuestos").value=parseFloat(result * parseFloat(document.getElementById("iva").value / 100));
+        var original1=parseFloat(document.getElementById("totalimpuestos").value);
+        var result1=Math.round(original1*100)/100 ;
+        document.getElementById("totalimpuestos").value=result1.toFixed(2);
+        var original2=parseFloat(result + result1);
+        var result2=Math.round(original2*100)/100 ;
+        document.getElementById("preciototal").value=result2.toFixed(2);
+}
+
+function validar_cabecera(){
+    var mensaje="";
+    if (document.getElementById("rifci").value=="") mensaje+="  - Nro. Cedula\n";
+    if (mensaje!="") {
+        alert("Atencion, se han detectado las siguientes incorrecciones:\n\n"+mensaje);
+    } else {
+        document.getElementById("facturacion").submit();
+    }
+}
+
+function validar_form_enviado() { 
+    var cuenta=0;
+    if (cuenta == 0){
+        cuenta++;
+        return true;
+    }else{
+        alert("Formulario ya enviado");
+        return false;
+    }
+}
+
+
+//ACTIVANDO FOCUS DE INPUT
+function setFocusLogin(){
+	document.loginForm.user.select();
+	document.loginForm.user.focus();
+}
+function setFocusUser(){
+	document.QForm.cedula.select();
+	document.QForm.cedula.focus();
+}
+function setFocusUserName(){
+	document.QForm.nombreapellido.select();
+	document.QForm.nombreapellido.focus();
+}
+
+
+// funciones de la ayuda //
+if(navigator.userAgent.indexOf("MSIE")>=0) navegador=0;
+else navegador=1;
+
+function colocaAyuda(event){
+    if(navegador==0)	{
+        var corX=window.event.clientX+document.documentElement.scrollLeft;
+        var corY=window.event.clientY+document.documentElement.scrollTop;
+    }else{
+        var corX=event.clientX+window.scrollX;
+        var corY=event.clientY+window.scrollY;
+    }
+    cAyuda.style.top=corY+20+"px";
+    cAyuda.style.left=corX+15+"px";
+}
+
+function ocultaAyuda(){
+    cAyuda.style.display="none";
+    if(navegador==0){
+        document.detachEvent("onmousemove", colocaAyuda);
+        document.detachEvent("onmouseout", ocultaAyuda);
+    }else{
+        document.removeEventListener("mousemove", colocaAyuda, true);
+        document.removeEventListener("mouseout", ocultaAyuda, true);
+    }
+}
+
+function muestraAyuda(event, campo, mensaje, oblig){
+    cAyuda=document.getElementById("mensajesAyuda");
+    cNombre=document.getElementById("ayudaTitulo");
+    cTex=document.getElementById("ayudaTexto");
+    colocaAyuda(event);
+    if(navegador==0){ 
+        document.attachEvent("onmousemove", colocaAyuda); 
+        document.attachEvent("onmouseout", ocultaAyuda); 
+    }else{
+        document.addEventListener("mousemove", colocaAyuda, true);
+        document.addEventListener("mouseout", ocultaAyuda, true);
+    }
+    var o = (oblig==null)?('<br>'):(oblig);
+    cNombre.innerHTML = campo+o;
+    cTex.width = 'auto';
+    cTex.innerHTML = msj = (mensaje==null)?('<br>'):(mensaje);
+    cAyuda.style.display="block";
+}
+
+function ventanavehiculos() {
+    rifci  = facturacion.rifci.value;    
+    if (rifci ==""){
+        alert("Debe Identificar a la Persona Antes de Agregar un Analisis !!!");
+        parent.window.close();
+    }
+    else {
+        miPopup = window.open("presupuestos/catalogo_personas.php","miwin","width=1100,height=500,scrollbars=yes");
+        miPopup.focus();
+    }
+}
+
+
+
+
+
+
+
+
+
+					
+
+
+		

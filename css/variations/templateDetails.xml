@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install version="1.5" type="template">
+	<name>yoo_enterprise</name>
+	<version>1.5.0</version>
+	<creationDate>March 2010</creationDate>
+	<author>YOOtheme</author>
+	<authorEmail>info@yootheme.com</authorEmail>
+	<authorUrl>http://www.yootheme.com</authorUrl>
+    <copyright>Copyright (C) 2007 - 2010 YOOtheme GmbH</copyright>
+    <license></license>
+	<description><![CDATA[
+<img src="../templates/yoo_enterprise/template_thumbnail.png" align="right" style="margin: 0px 0px 10px 10px;" />
+
+<div style="font-size: 13px;">
+Enterprise is the April 2010 template of the YOOtheme club. 
+<br />It is based on YOOtheme's Warp5 template framework.<br /><span style="color: #ff0000;"><b>NOTE: It is not free or public. This template is for members of the YOOtheme club only.</b></span>
+<br /><br /><strong>YOOtheme</strong><br />Professional and powerfull Joomla templates.<br /><a href="http://www.yootheme.com/">http://www.yootheme.com</a>.
+<br /><br />See a live demo of all YOOtheme templates.<br /><a href="http://demo.yootheme.com/">http://demo.yootheme.com</a>.
+<br /><br /><strong>Warp</strong><br />A fast and powerful template framework to create sophisticated Joomla templates<br /><a href="http://warp.yootheme.com">http://warp.yootheme.com</a>.
+<br /><br /><strong>YOOtools</strong><br />Premium Joomla extensions to enhance your website experience.<br /><a href="http://tools.yootheme.com">http://tools.yootheme.com</a>.
+<br /><br /><strong>ZOO</strong><br />Versatile catalog system with content construction kit for Joomla.<br /><a href="http://zoo.yootheme.com">http://zoo.yootheme.com</a>.
+<br /><br /><strong>Teamlog</strong><br />Web based Time Tracking Solution for Joomla focused on simplicity.<br /><a href="http://teamlog.yootheme.com">http://teamlog.yootheme.com</a>.
+</div>
+
+]]></description>
+	<files>
+		<filename>apple_touch_icon.png</filename>
+		<filename>changelog.php</filename>
+		<filename>component.php</filename>
+		<filename>config.php</filename>
+		<filename>favicon.ico</filename>
+		<filename>index.php</filename>
+		<filename>params.ini</filename>
+		<filename>raw.php</filename>
+		<filename>template_thumbnail.png</filename>
+		<filename>templateDetails.xml</filename>
+		<folder>css</folder>
+		<folder>html</folder>
+		<folder>lib</folder>
+		<folder>images</folder>
+		<folder>fonts</folder>
+	</files>
+	<positions>
+		<position>absolute</position>
+		<position>search</position>
+		<position>logo</position>
+		<position>menu</position>
+		<position>banner</position>
+		<position>toolbarleft</position>
+		<position>toolbarright</position>
+		<position>headerleft</position>
+		<position>headerright</position>
+		<position>breadcrumbs</position>
+		<position>top</position>
+		<position>topblock</position>
+		<position>left</position>
+		<position>right</position>
+		<position>maintop</position>
+		<position>contentleft</position>
+		<position>contentright</position>
+		<position>contenttop</position>
+		<position>contentbottom</position>
+		<position>mainbottom</position>
+		<position>bottom</position>
+		<position>bottomblock</position>
+		<position>footer</position>
+		<position>content1</position>
+		<position>content2</position>
+		<position>content3</position>
+		<position>content4</position>
+		<position>content5</position>
+		<position>content6</position>
+		<position>content7</position>
+		<position>content8</position>
+		<position>content9</position>
+		<position>debug</position>
+	</positions>
+	<params>
+		<param name="color" type="list" default="default" label="Template Color" description="Used color for template">
+			<option value="default">Blue/White</option>
+			<option value="green">Green/White</option>
+			<option value="red">Red/White</option>
+			<option value="orange">Orange/White</option>
+			<option value="redblack">Red/Black</option>
+			<option value="blackred">Black/Red</option>
+			<option value="browngreen">Brown/Green</option>
+			<option value="blueorange">Blue/Orange</option>
+			<option value="orangeblack">Orange/Black</option>
+			<option value="crystal">Crystal</option>
+			<option value="energy">Energy</option>
+			<option value="office">Office</option>
+		</param>
+		<param name="@spacer" type="spacer" />
+		<param name="template_width" type="text" size="10" default="860" label="Template Width" description="Set the template width." />
+		<param name="template_width_unit" type="radio" default="px" label="Template Width Unit" description="Set the template width length unit to pixel or percent. For example use 90% to get a fluid layout.">
+			<option value="px">Pixel</option>
+			<option value="%">Percent</option>
+		</param>
+		<param name="@spacer" type="spacer" />
+		<param name="left_width" type="text" size="10" default="200" label="Left Width" description="Set the width of the #left column in pixels. Don't forget to modify existent background images to match the new width if needed." />
+		<param name="left_space" type="text" size="10" default="15" label="Left Space" description="Set the space between the #left and #main column in pixels." />
+		<param name="right_width" type="text" size="10" default="200" label="Right Width" description="Set the width of the #right column in pixels. Don't forget to modify existent background images to match the new width if needed." />
+		<param name="right_space" type="text" size="10" default="15" label="Right Space" description="Set the space between the #main and #right column in pixels." />
+		<param name="@spacer" type="spacer" />
+		<param name="contentleft_width" type="text" size="10" default="180" label="Contentleft Width" description="Set the width of the #contentleft column in pixels. Don't forget to modify existent background images to match the new width if needed." />
+		<param name="contentleft_space" type="text" size="10" default="15" label="Contentleft Space" description="Set the space between the #contentleft and #content column in pixels." />
+		<param name="contentright_width" type="text" size="10" default="180" label="Contentright Width" description="Set the width of the #contentright column in pixels. Don't forget to modify existent background images to match the new width if needed." />
+		<param name="contentright_space" type="text" size="10" default="15" label="Contentright Space" description="Set the space between the #content and #contentright column in pixels." />
+		<param name="@spacer" type="spacer" />
+		<param name="menu_width" type="text" size="10" default="300" label="Drop Down Column Width" description="Set the width of one column of the drop down menu in pixels." />
+		<param name="@spacer" type="spacer" />
+		<param name="date" type="radio" default="1" label="Show Date" description="Show/Hide the date.">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="@spacer" type="spacer" />
+		<param name="load_mootools" type="radio" default="1" label="Enable Mootools" description="Enable/Disable Mootools 1.11 javascript library.">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="load_javascript" type="radio" default="1" label="Enable Javascripts" description="Enable/Disable all the templates javascripts.">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="compression" type="list" default="1" label="Enable CSS/JS Compression" description="Enable/Disable combining templates css and javascript in a single file with optional gzip compression.">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+			<option value="2">Gzip</option>
+		</param>		
+	</params>
+</install>

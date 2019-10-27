@@ -1,0 +1,403 @@
+/*==============================================================*/
+/* DBMS name:      PostgreSQL 8                                 */
+/* Created on:     16/01/2015 03:55:22 p.m.                     */
+/*==============================================================*/
+
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET escape_string_warning = off;
+
+--
+-- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: alcides
+--
+
+CREATE PROCEDURAL LANGUAGE plpgsql;
+
+
+ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO alcides;
+
+SET search_path = public, pg_catalog;
+
+
+drop table categoria;
+drop table comunidad;
+drop table estados_tramite;
+drop table parroquia;
+drop table prioridad;
+drop table solicitante;
+drop table ticket;
+drop table tipo_solicitante;
+drop table tramite;
+drop table tramite_unidad;
+drop table unidades;
+drop table usuarios;
+
+/*==============================================================*/
+/* Table: categoria                                             */
+/*==============================================================*/
+create table categoria (
+   cod_categoria        int4                 not null,
+   descripcion_categoria varchar(100)         null,
+   constraint pk_categoria primary key (cod_categoria)
+);
+
+ALTER TABLE public.categoria OWNER TO alcides;
+
+CREATE SEQUENCE categoria_cod_categoria_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+ALTER TABLE public.categoria_cod_categoria_seq OWNER TO alcides;
+ALTER SEQUENCE categoria_cod_categoria_seq OWNED BY categoria.cod_categoria;
+SELECT pg_catalog.setval('categoria_cod_categoria_seq', 1, true);
+
+/*==============================================================*/
+/* Table: comunidad                                             */
+/*==============================================================*/
+create table comunidad (
+   cod_comunidad        int4                 not null,
+   cod_parroquia        int4                 null,
+   descripcion_comunidad varchar(100)         null,
+   constraint pk_comunidad primary key (cod_comunidad)
+);
+
+ALTER TABLE public.comunidad OWNER TO alcides;
+
+CREATE SEQUENCE comunidad_cod_comunidad_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+ALTER TABLE public.comunidad_cod_comunidad_seq OWNER TO alcides;
+ALTER SEQUENCE comunidad_cod_comunidad_seq OWNED BY comunidad.cod_comunidad;
+SELECT pg_catalog.setval('comunidad_cod_comunidad_seq', 1, true);
+
+/*==============================================================*/
+/* Table: estados_tramite                                       */
+/*==============================================================*/
+create table estados_tramite (
+   cod_estado           int4                 not null,
+   estado               varchar(50)          null,
+   sub_estado           varchar(50)          null,
+   descripcion_estado   varchar(100)         null,
+   constraint pk_estados_tramite primary key (cod_estado)
+);
+
+ALTER TABLE public.estados_tramite OWNER TO alcides;
+
+CREATE SEQUENCE estados_tramite_cod_estado_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+ALTER TABLE public.estados_tramite_cod_estado_seq OWNER TO alcides;
+ALTER SEQUENCE estados_tramite_cod_estado_seq OWNED BY estados_tramite.cod_estado;
+SELECT pg_catalog.setval('estados_tramite_cod_estado_seq', 1, true);
+
+/*==============================================================*/
+/* Table: parroquia                                             */
+/*==============================================================*/
+create table parroquia (
+   cod_parroquia        int4                 not null,
+   descripcion_parroquia varchar(100)         null,
+   constraint pk_parroquia primary key (cod_parroquia)
+);
+
+ALTER TABLE public.parroquia OWNER TO alcides;
+
+CREATE SEQUENCE parroquia_cod_parroquia_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+ALTER TABLE public.parroquia_cod_parroquia_seq OWNER TO alcides;
+ALTER SEQUENCE parroquia_cod_parroquia_seq OWNED BY parroquia.cod_parroquia;
+SELECT pg_catalog.setval('parroquia_cod_parroquia_seq', 1, true);
+
+/*==============================================================*/
+/* Table: prioridad                                             */
+/*==============================================================*/
+create table prioridad (
+   cod_prioridad        int4                 not null,
+   descripcion_prioridad varchar(100)         null,
+   constraint pk_prioridad primary key (cod_prioridad)
+);
+
+ALTER TABLE public.prioridad OWNER TO alcides;
+
+CREATE SEQUENCE prioridad_cod_prioridad_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+ALTER TABLE public.prioridad_cod_prioridad_seq OWNER TO alcides;
+ALTER SEQUENCE prioridad_cod_prioridad_seq OWNED BY prioridad.cod_prioridad;
+SELECT pg_catalog.setval('prioridad_cod_prioridad_seq', 1, true);
+
+/*==============================================================*/
+/* Table: solicitante                                           */
+/*==============================================================*/
+create table solicitante (
+   cedula_rif           varchar(12)          not null,
+   cod_tipo_solicitante int4                 null,
+   nombre_solicitante   varchar(50)          null,
+   sexo_solicitante     varchar(1)           null,
+   fecha_nac            date                 null,
+   direccion_habitacion text                 null,
+   telefono_fijo        varchar(15)          null,
+   telefono_movil       varchar(15)          null,
+   email                varchar(50)          null,
+   constraint pk_solicitante primary key (cedula_rif)
+);
+
+ALTER TABLE public.solicitante OWNER TO alcides;
+
+/*==============================================================*/
+/* Table: ticket                                                */
+/*==============================================================*/
+create table ticket (
+   cod_ticket           int4                 not null,
+   cedula_rif           varchar(12)          null,
+   cod_comunidad        int4                 null,
+   cod_prioridad        int4                 null,
+   cod_estado           int4                 null,
+   cod_tramite_unidad   int4                 null,
+   descripcion_tiket    text                 null,
+   fecha_registro       date                 null,
+   monto_solicitud      float8               null,
+   persona_contacto_dep varchar(100)         null,
+   constraint pk_ticket primary key (cod_ticket)
+);
+
+ALTER TABLE public.ticket OWNER TO alcides;
+
+CREATE SEQUENCE ticket_cod_ticket_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+ALTER TABLE public.ticket_cod_ticket_seq OWNER TO alcides;
+ALTER SEQUENCE ticket_cod_ticket_seq OWNED BY ticket.cod_ticket;
+SELECT pg_catalog.setval('ticket_cod_ticket_seq', 1, true);
+
+/*==============================================================*/
+/* Table: tipo_solicitante                                      */
+/*==============================================================*/
+create table tipo_solicitante (
+   cod_tipo_solicitante int4                 not null,
+   descripcion_tipo_solicitnte varchar(100)         null,
+   constraint pk_tipo_solicitante primary key (cod_tipo_solicitante)
+);
+
+ALTER TABLE public.tipo_solicitante OWNER TO alcides;
+
+CREATE SEQUENCE tipo_solicitante_cod_tipo_solicitante_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+ALTER TABLE public.tipo_solicitante_cod_tipo_solicitante_seq OWNER TO alcides;
+ALTER SEQUENCE tipo_solicitante_cod_tipo_solicitante_seq OWNED BY tipo_solicitante.cod_tipo_solicitante;
+SELECT pg_catalog.setval('tipo_solicitante_cod_tipo_solicitante_seq', 1, true);
+
+/*==============================================================*/
+/* Table: tramite                                               */
+/*==============================================================*/
+create table tramite (
+   cod_tramite          int4                 not null,
+   cod_categoria        int4                 null,
+   nombre_tramite       varchar(100)         null,
+   descripcion_tramite  text                 null,
+   constraint pk_tramite primary key (cod_tramite)
+);
+
+ALTER TABLE public.tramite OWNER TO alcides;
+
+CREATE SEQUENCE tramite_cod_tramite_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+ALTER TABLE public.tramite_cod_tramite_seq OWNER TO alcides;
+ALTER SEQUENCE tramite_cod_tramite_seq OWNED BY tramite.cod_tramite;
+SELECT pg_catalog.setval('tramite_cod_tramite_seq', 1, true);
+
+/*==============================================================*/
+/* Table: tramite_unidad                                        */
+/*==============================================================*/
+create table tramite_unidad (
+   cod_tramite_unidad   int4                 not null,
+   cod_unidad           int4                 null,
+   cod_tramite          int4                 null,
+   constraint pk_tramite_unidad primary key (cod_tramite_unidad)
+);
+
+ALTER TABLE public.tramite_unidad OWNER TO alcides;
+
+CREATE SEQUENCE tramite_unidad_cod_tramite_unidad_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+ALTER TABLE public.tramite_unidad_cod_tramite_unidad_seq OWNER TO alcides;
+ALTER SEQUENCE tramite_unidad_cod_tramite_unidad_seq OWNED BY tramite_unidad.cod_tramite_unidad;
+SELECT pg_catalog.setval('tramite_unidad_cod_tramite_unidad_seq', 1, true);
+
+/*==============================================================*/
+/* Table: unidades                                              */
+/*==============================================================*/
+create table unidades (
+   cod_unidad           int4                 not null,
+   siglas_unidad        varchar(50)          null,
+   nombre_unidad        varchar(50)          null,
+   responsable_unidad   varchar(50)          null,
+   cargo_responsable    varchar(50)          null,
+   direccion_unidad     varchar(100)         null,
+   telefono_1           varchar(15)          null,
+   telefono_2           varchar(15)          null,
+   email_unidad         varchar(50)          null,
+   horario_unidad       varchar(50)          null,
+   constraint pk_unidades primary key (cod_unidad)
+);
+
+ALTER TABLE public.unidades OWNER TO alcides;
+
+CREATE SEQUENCE unidades_cod_unidad_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+ALTER TABLE public.unidades_cod_unidad_seq OWNER TO alcides;
+ALTER SEQUENCE unidades_cod_unidad_seq OWNED BY unidades.cod_unidad;
+SELECT pg_catalog.setval('unidades_cod_unidad_seq', 1, true);
+
+/*==============================================================*/
+/* Table: usuarios                                              */
+/*==============================================================*/
+CREATE TABLE usuarios (
+    cedula_usuario integer NOT NULL,
+    nombre_usuario character varying(50),
+    apellido_usuario character varying(50),
+    usuario character varying(20),
+    pass character varying(50),
+    nivel_acceso smallint,
+    status smallint,
+    fec_ult_acceso date DEFAULT now()
+);
+
+ALTER TABLE public.usuarios OWNER TO alcides;
+
+/*==============================================================*/
+/* Table: visitcounter                                          */
+/*==============================================================*/
+CREATE TABLE visitcounter (
+    id integer NOT NULL,
+    tm integer NOT NULL,
+    ip character varying(16) NOT NULL
+);
+
+ALTER TABLE public.visitcounter OWNER TO alcides;
+
+CREATE SEQUENCE visitcounter_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+ALTER TABLE public.visitcounter_id_seq OWNER TO alcides;
+
+--
+-- Name: visitcounter_id_seq; Type: SEQUENCE SET; Schema: public; Owner: alcides
+--
+
+SELECT pg_catalog.setval('visitcounter_id_seq', 1, true);
+--
+-- Data for Name: usuarios; Type: TABLE DATA; Schema: public; Owner: alcides
+--
+
+COPY usuarios (cedula_usuario, nombre_usuario, apellido_usuario, usuario, pass, nivel_acceso, status, fec_ult_acceso) FROM stdin;
+11398755	Yenny	Rivero	yrivero	11398755	1	1	2014-11-10
+11395397	Alcides C.	Peraza R.	aperaza17	d6426956ffea7efa67e0b78f67b999a4	1	1	2014-11-14
+\.
+
+alter table comunidad
+   add constraint fk_comunida_reference_parroqui foreign key (cod_parroquia)
+      references parroquia (cod_parroquia)
+      on delete restrict on update restrict;
+
+alter table solicitante
+   add constraint fk_solicita_reference_tipo_sol foreign key (cod_tipo_solicitante)
+      references tipo_solicitante (cod_tipo_solicitante)
+      on delete restrict on update restrict;
+
+alter table ticket
+   add constraint fk_ticket_reference_estados_ foreign key (cod_estado)
+      references estados_tramite (cod_estado)
+      on delete restrict on update restrict;
+
+alter table ticket
+   add constraint fk_ticket_reference_tramite_ foreign key (cod_tramite_unidad)
+      references tramite_unidad (cod_tramite_unidad)
+      on delete restrict on update restrict;
+
+alter table ticket
+   add constraint fk_ticket_reference_solicita foreign key (cedula_rif)
+      references solicitante (cedula_rif)
+      on delete restrict on update restrict;
+
+alter table ticket
+   add constraint fk_ticket_reference_comunida foreign key (cod_comunidad)
+      references comunidad (cod_comunidad)
+      on delete restrict on update restrict;
+
+alter table ticket
+   add constraint fk_ticket_reference_priorida foreign key (cod_prioridad)
+      references prioridad (cod_prioridad)
+      on delete restrict on update restrict;
+
+alter table tramite
+   add constraint fk_tramite_reference_categori foreign key (cod_categoria)
+      references categoria (cod_categoria)
+      on delete restrict on update restrict;
+
+alter table tramite_unidad
+   add constraint fk_tramite__reference_unidades foreign key (cod_unidad)
+      references unidades (cod_unidad)
+      on delete restrict on update restrict;
+
+alter table tramite_unidad
+   add constraint fk_tramite__reference_tramite foreign key (cod_tramite)
+      references tramite (cod_tramite)
+      on delete restrict on update restrict;
+
+
+

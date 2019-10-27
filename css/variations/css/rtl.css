@@ -1,0 +1,24 @@
+/* rtl.css, Copyright (C) 2007 - 2010 YOOtheme GmbH */
+
+/*
+ * rtl
+ */
+
+/* layout */
+#middle-expand {
+	position: relative;
+	right: -100%;
+}
+
+#mainmiddle-expand {
+	position: relative;
+	right: -100%;
+}
+
+/* menus */
+
+#menu .dropdown { right: -999em; }
+
+#menu li:hover .dropdown,
+#menu li.remain .dropdown,
+#menu li.hovered .dropdown { right: auto; }

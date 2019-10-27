@@ -1,0 +1,207 @@
+<?php //seccion de mensajes del sistema.
+	$redir=$_SERVER['HTTP_REFERER']; // Ruta para redireccionar a la pagina que nos llamo
+	$pag=$_SERVER['PHP_SELF'];  // el NOMBRE y ruta de esta misma p�ina.
+	$type=$_GET["type"];
+	$pagina=$pag.'?type='.$type;
+
+//Conexion a la base de datos
+$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_empresa password=$sql_pass");
+?>
+
+<?php //seccion para recibir los datos y modificarlos.
+if (isset($_GET['codigo_concepto'])){
+	$datos_modificar= $_GET['codigo_concepto'];
+
+	//se le hace el llamado al archivo de conexion y luego se realiza el enlace.	
+	require("conexion/aut_config.inc.php");
+	$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");	
+
+	//se le hace el llamado a la funcion de insertar.	
+	$datos_consulta = pg_query("SELECT * FROM empresa, banco, tipo_cuenta, cuenta, concepto where empresa.rif_empresa = cuenta.rif_empresa and banco.codigo_banco = cuenta.codigo_banco and tipo_cuenta.codigo_tipo_cuenta = cuenta.codigo_tipo_cuenta and concepto.codigo_cuenta = cuenta.codigo_cuenta and concepto.codigo_concepto = $datos_modificar order by concepto.codigo_cuenta") or die('La consulta fall&oacute;: ' . pg_last_error());	
+
+	$resultados1=pg_fetch_array($datos_consulta);
+	pg_free_result($datos_consulta);
+	pg_close();
+}
+?> 
+
+<?php 
+if (isset($_POST[save]))
+{//se resive los datos a ser modificados
+	$codigo_concepto = $_POST['codigo_concepto'];
+	$codigo_cuenta = $_POST['codigo_cuenta'];
+	$nombre_concepto = $_POST['nombre_concepto'];
+	$costo_unitario = $_POST['costo_unitario'];
+
+		$error="bien";	
+		//se le hace el llamado al archivo de conexion y luego se realiza el enlace.	
+		require("conexion/aut_config.inc.php");
+		$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");	
+
+		//se le hace el llamado a la funcion de insertar.	
+		$inserta_registro = pg_query("SELECT update_concepto($codigo_concepto,$codigo_cuenta, '$nombre_concepto', '$costo_unitario')") or die('La consulta fall&oacute;: ' . pg_last_error());		
+		$result_insert=pg_fetch_array($inserta_registro);	
+		$resultado_insert=$result_insert[0];
+
+		pg_free_result($inserta_registro);
+		//header ("Location: $pagina");
+		pg_close();	//exit;	   
+}//fin del procedimiento modificar.
+?>
+
+<div align="center" class="centermain">
+	<div class="main">  
+		<table class="admin_concepto">
+			<tr>
+				<th>
+						CONCEPTOS:
+					<small>
+						ACTUALIZACI&Oacute;N DE DATOS
+					</small>
+				</th>
+			</tr>
+		</table>
+        
+		<table class="adminform" border="0">
+			<tr bgcolor="#55baf3">
+				<th colspan="3">
+					MODIFICAR DATOS DE CONCEPTOS
+				</th>
+			</tr>
+
+			<?php 
+			if ((isset($_POST[save])) and ($error=="bien"))
+			{		
+			?> 
+			
+			<tr>
+				<td colspan="2" align="center">                        	
+					<br />
+					<strong>RESULTADO</strong>: 
+					<?php 
+					switch($resultado_insert)
+					{
+						case 0: 
+							echo 'ESTE REGISTRO NO SE PUDO MODIFICAR.';
+							break;
+						case 1: 
+							echo 'ESTE REGISTRO FUE MODIFICADO CON &Eacute;XITO.';	
+							break;	
+					}				
+					echo '<br />'.$msg;
+					?>
+					<br />	
+				</td>
+			</tr> 
+			
+			<table class="adminform" align="center">
+				<tr align="center">
+					<td width="100%" valign="top" align="center">
+						<div id="cpanel">
+							<div style="float:right;">
+								<div class="icon">
+									<a href="index2.php?type=concepto">
+										<img src="images/producto.png" alt="salir" align="middle"  border="0" />
+										<span>Gestor de Datos</span>
+									</a>
+								</div>
+							</div>	
+						</div>
+					</td>
+				</tr>
+			</table>
+		
+			<?php 
+			}
+			else
+			{
+			?> 
+
+ 			<form method="POST" action="<?php echo $pagina?>" enctype="multipart/form-data">
+	       <tr>
+				<td width="15%">
+				Codigo de Concepto:
+				</td>
+				<td width="85%">
+				<input class="inputbox" type="text" id="codigo_concepto" name="codigo_concepto" value="<?php echo $resultados1[codigo_concepto]; ?>"/>
+      		<font color="#ff0000">*</font>
+				<script type="text/javascript">
+      			var codigo = new LiveValidation('codigo_concepto');
+         		codigo.add(Validate.Presence);
+         		codigo.add( Validate.texto );
+      		</script>
+				</td>
+			</tr>
+	
+			<tr>
+				<td>
+					Empresa:
+				</td>
+	
+				<td align="left">
+				<select id="codigo_cuenta" name="codigo_cuenta">
+					<option value="<?php echo $resultados1[codigo_cuenta]; ?>">-Seleccione para Modificar--</option>
+					<?php 
+		  			$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+	
+					$cod_cuenta=pg_query("SELECT empresa.rif_empresa, empresa.nombre_empresa, cuenta.n_cuenta, cuenta.codigo_cuenta FROM empresa,cuenta where empresa.rif_empresa = cuenta.rif_empresa order by empresa.nombre_empresa");
+						while ($array_empresa=pg_fetch_array($cod_cuenta))
+						{
+							echo '<option value="'.$array_empresa[3].'">'.$array_empresa[1].' -- '.$array_empresa[2].'</option>';
+						}
+						pg_free_result($cod_cuenta);
+						?>
+				</select>
+      		<font color="#ff0000">*</font>
+				<script type="text/javascript">
+      			var codigo = new LiveValidation('codigo_cuenta');
+         		codigo.add(Validate.Presence);
+         		codigo.add( Validate.texto );
+      		</script>
+				</td>
+			</tr>
+	
+			<tr>
+				<td>
+					Nombre del Concepto:
+				</td>
+	
+				<td>
+				<textarea id="nombre_concepto" name="nombre_concepto" cols="60" rows="3"><?php echo $resultados1[nombre_concepto]; ?></textarea>
+      		<font color="#ff0000">*</font>
+				<script type="text/javascript">
+      			var codigo = new LiveValidation('nombre_concepto');
+         		codigo.add(Validate.Presence);
+         		codigo.add( Validate.texto );
+      		</script>
+				</td>
+			</tr>
+	
+			<tr>
+				<td>
+				Costo Unitario:
+				</td>
+				<td>
+				<input class="inputbox" type="text" id="costo_unitario" name="costo_unitario" value="<?php echo $resultados1[costo_unitario]; ?>"/>
+				<font color="#ff0000">*</font>
+				<script type="text/javascript">
+      			var codigo = new LiveValidation('costo_unitario');
+         		codigo.add(Validate.Presence);
+         		codigo.add( Validate.texto );
+         	</script>
+				</td>	
+			</tr>
+						
+			<tr bgcolor="#55baf3">
+				<td colspan="3" align="center">
+					<input type="submit" class="button" name="save" value="  Guardar  " >
+					<input  class="button" type="button" onClick="history.back()" value="Regresar">
+				</td>
+			</tr>
+		</form>			
+		</table>
+			<?php 
+			}
+			?> 		
+	</div>
+</div>

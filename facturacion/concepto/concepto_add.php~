@@ -1,0 +1,191 @@
+<?php
+
+if (isset($_GET['error']))
+{
+	$error_accion_ms[0]= "La Empresa No puede ser Borrada.<br>Si desea borrarlo, primero cree uno nuevo.";
+	$error_accion_ms[1]= "Datos incompletos.";
+	$error_accion_ms[2]= "Contrase&ntilde;as no coinciden.";
+	$error_accion_ms[3]= "El Nivel de Acceso ha de ser num&eacute;rico.";
+	$error_accion_ms[4]= "El Usuario ya est&aacute; registrado.";
+	$error_accion_ms[5]= "Ya existe un usuario con el n&uacute;mero de c&eacute;dula que usted introdujo.";
+	$error_accion_ms[6]= "El n&uacute;mero de c&eacute;dula que usted introdujo no es v&aacute;lido.";
+	$error_cod = $_GET['error'];
+}
+	$redir=$_SERVER['HTTP_REFERER']; // Ruta para redireccionar a la pagina que nos llamo
+	$pag=$_SERVER['PHP_SELF'];  // el NOMBRE y ruta de esta misma p�ina.
+	$type=$_GET["type"];
+	$pagina=$pag.'?type='.$type;
+
+//Conexion a la base de datos
+$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+?>
+
+<?php 
+if (isset($_POST[save]))
+{
+	$codigo_concepto = $_POST['codigo_concepto'];
+	$codigo_cuenta = $_POST['codigo_cuenta'];
+	$nombre_concepto = $_POST['nombre_concepto'];
+	$costo_unitario = $_POST['costo_unitario'];
+
+	require("conexion/aut_config.inc.php");
+	$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");	
+	
+	$error="bien";
+	
+	$inserta_registro = pg_query("insert into concepto (codigo_concepto, codigo_cuenta, nombre_concepto, costo_unitario) values ($codigo_concepto, $codigo_cuenta, '$nombre_concepto', '$costo_unitario')") or die("NO SE PUEDE INSERTAR EL REGISTRO EN LA BASE DE DATOS.");	
+	$result_insert=pg_fetch_array($inserta_registro);	
+	pg_free_result($inserta_registro);
+	$resultado_insert=$result_insert[0];
+	pg_close();	
+	//exit;	   
+}//fin del add        
+?>
+
+<div align="center" class="centermain">
+	<div class="main">  
+		<table class="admin_concepto">
+			<tr>
+				<th>
+					Conceptos:
+					<small>
+						Nuevo
+					</small>
+				</th>
+			</tr>
+		</table>
+        </br>
+		<table class="adminform" border="0">
+			<tr bgcolor="#55baf3">
+				<th colspan="2">
+					Registro de una nueva concepto
+				</th>
+			</tr>
+			
+			<?php 
+			if ((isset($_POST[save])) and ($error=="bien"))
+			{		
+			?> 
+			
+			<tr>
+				<td colspan="2" align="center">                        	
+					<br />
+					<strong>Resultado</strong>: Registro Procesado con &eacute;xito
+					<br />	
+				</td>
+			</tr> 
+			
+			<table class="adminform" align="center">
+				<tr align="center">
+					<td width="100%" valign="top" align="center">
+						<div id="cpanel">
+							<div style="float:right;">
+								<div class="icon">
+									<a href="index2.php?type=concepto">
+										<img src="images/producto.png" alt="salir" align="middle"  border="0" />
+										<span>Gestor de Datos</span>
+									</a>
+								</div>
+							</div>	
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+			<?php 
+			}
+			else
+			{
+			?> 
+			
+			<?php echo $error;?>
+	
+ 			<form method="POST" action="fpdf/imprimir_factura_egreso.php" enctype="multipart/form-data">
+	       <tr>
+				<td width="15%">
+				Codigo de Concepto:
+				</td>
+				<td width="85%">
+				<input class="inputbox" type="text" id="codigo_concepto" name="codigo_concepto"/>
+      		<font color="#ff0000">*</font>
+				<script type="text/javascript">
+      			var codigo = new LiveValidation('codigo_concepto');
+         		codigo.add(Validate.Presence);
+         		codigo.add( Validate.texto );
+      		</script>
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					Empresa:
+				</td>
+
+				<td align="left">
+				<select id="codigo_cuenta" name="codigo_cuenta">
+					<option value="">---</option>
+					<?php 
+		  			$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+	
+					$cod_cuenta=pg_query("SELECT empresa.rif_empresa, empresa.nombre_empresa, cuenta.n_cuenta, cuenta.codigo_cuenta FROM empresa,cuenta where empresa.rif_empresa = cuenta.rif_empresa order by empresa.nombre_empresa");
+						while ($array_empresa=pg_fetch_array($cod_cuenta))
+						{
+							echo '<option value="'.$array_empresa[3].'">'.$array_empresa[1].' -- '.$array_empresa[2].'</option>';
+						}
+						pg_free_result($cod_cuenta);
+						?>
+				</select>
+      		<font color="#ff0000">*</font>
+				<script type="text/javascript">
+      			var codigo = new LiveValidation('codigo_cuenta');
+         		codigo.add(Validate.Presence);
+         		codigo.add( Validate.texto );
+      		</script>
+				</td>
+			</tr>
+	
+			<tr>
+				<td>
+					Nombre del Concepto:
+				</td>
+	
+				<td>
+				<textarea id="nombre_concepto" name="nombre_concepto" cols="60" rows="3"></textarea>
+      		<font color="#ff0000">*</font>
+				<script type="text/javascript">
+      			var codigo = new LiveValidation('nombre_concepto');
+         		codigo.add(Validate.Presence);
+         		codigo.add( Validate.texto );
+      		</script>
+				</td>
+			</tr>
+	
+			<tr>
+				<td>
+				Costo Unitario:
+				</td>
+				<td>
+				<input class="inputbox" type="text" id="costo_unitario" name="costo_unitario"/>
+				<font color="#ff0000">*</font>
+				<script type="text/javascript">
+      			var codigo = new LiveValidation('costo_unitario');
+         		codigo.add(Validate.Presence);
+         		codigo.add( Validate.texto );
+         	</script>
+				</td>	
+			</tr>
+			
+			<tr>
+				<td bgcolor="#55baf3" colspan="2" align="center">
+					<input type="submit" class="button" name="save" value="  Guardar  " >
+					<input class="button" type="reset" value="Limpiar" name="Refresh"> 
+					<input  class="button" type="button" onClick="history.back()" value="Regresar">
+				</td>
+			</tr>
+		</table>
+		</form>
+			<?php 
+			}
+			?> 
+	</div>
+</div>

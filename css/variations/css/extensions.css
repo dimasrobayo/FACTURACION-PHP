@@ -1,0 +1,147 @@
+/* extensions.css, Copyright (C) 2007 - 2010 YOOtheme GmbH */
+
+#left #form-login fieldset { border: none; }
+
+/*
+ * YOOsearch
+ */
+
+#page div.default div.yoo-search { height: 20px; }
+#page div.default div.yoo-search div.searchbox {
+	height: 20px;
+	background: url(../images/yoosearch/searchbox_bg.png) 0 0 no-repeat;
+}
+#page div.default div.yoo-search div.searchbox:hover  { background-position: 0 -20px; }
+#page div.default div.yoo-search div.searchbox input {
+	width: 80px;
+	height: 20px;
+	padding: 0px 0px 0px 4px;
+	font-size: 11px;
+	line-height: 20px;
+}
+#page div.default div.yoo-search div.searchbox button { height: 20px; }
+#page div.default div.yoo-search div.searchbox button.search-magnifier { background: url(../images/yoosearch/magnifier_icon.png) 0 0 no-repeat; }
+#page div.default div.yoo-search div.searchbox button.search-close { background: url(../images/yoosearch/close_icon.png) 0 0 no-repeat; }
+
+#page div.yoo-search div.resultbox {
+	position: absolute;
+	right: -11px;
+	top: 30px;
+	z-index: 20;
+}
+
+#page div.default div.yoo-search div.resultbox-bg {
+	padding: 0px 1px 0px 1px;
+	border-left: 1px solid #E0E0E0;
+	border-right: 1px solid #E0E0E0;
+	background: #ffffff;
+}
+
+#page div.default div.yoo-search div.search-categories { background: #f9f9f9; }
+#page div.default div.yoo-search div.search-results { background: #f9f9f9 url(../images/yoosearch/resultbox_bg.png) 0 100% repeat-x; }
+
+#page div.default div.yoo-search h3.search-header { 
+
+}
+
+#page div.default div.yoo-search div.resultbox-bl { background: url(../images/yoosearch/resultbox_bl.png) 0 100% no-repeat; }
+#page div.default div.yoo-search div.resultbox-br { background: url(../images/yoosearch/resultbox_br.png) 100% 100% no-repeat; }
+#page div.default div.yoo-search div.resultbox-b { 
+	line-height: 26px;
+	text-shadow: 0 1px 0 rgba(255,255,255,1);
+	background: url(../images/yoosearch/resultbox_b.png) 0 100% repeat-x;
+}
+
+#page div.default div.yoo-search span.search-more { background: url(../images/yoosearch/more_icon.png) 0 0 no-repeat; }
+#page div.default div.yoo-search h3.search-header {
+	height: 26px;
+	margin: 0px -1px 0px -1px;
+	background: url(../images/yoosearch/header_bg.png) 0 0 repeat-x;
+	text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+	color: #ffffff;
+}
+#page div.default div.yoo-search .resultbox-bg li { 
+	padding-bottom: 1px;
+	background: url(../images/menu_level2_item.png) 0 100% repeat-x;
+}
+#page div.default div.yoo-search .resultbox-bg a { background: none; }
+#page div.default div.yoo-search .resultbox-bg a:hover { background: url(../images/menu_level2_item_hover.png) 0 0 repeat-x; }
+#page div.default div.yoo-search div.resultbox-b a { color: #666666; }
+#page div.default div.yoo-search div.resultbox-b a:hover { color: #9D1C1F; }
+
+#page div.default div.yoo-search .resultbox-bg a,
+#page div.default div.yoo-search .resultbox-bg a h3 { 
+	color: #666666;
+	text-shadow: 0 1px 0 rgba(255,255,255,1);
+}
+#page div.default div.yoo-search .resultbox-bg a:hover  { color: #323232; }
+#page div.default div.yoo-search .resultbox-bg a:hover h3 { color: #9D1C1F; }
+
+
+/*
+ * YOOtweet
+ */
+
+/* single */
+#header div.single div.yoo-tweet {
+	min-width: 200px;
+	max-width: 400px;
+}
+
+#header div.single div.yoo-tweet p { margin-top: 0px; }
+
+/*
+ * YOOlogin
+ */
+
+ 
+/* quick */
+#header span.quick span.yoo-login {}
+
+#header span.quick span.yoo-login span.login { width: 231px; }
+
+#header span.quick span.yoo-login span.login span.login-button-text,
+#header span.quick span.yoo-login span.login span.login-button-icon { margin-right: 0px; }
+
+#header span.quick span.yoo-login span.login span.lostpassword, 
+#header span.quick span.yoo-login span.login span.lostusername,
+#header span.quick span.yoo-login span.login span.registration { margin-top: 5px; }
+
+#header span.quick span.yoo-login span.logout {
+	margin-top: 10px;
+	overflow: visible;
+}
+
+#header span.quick span.yoo-login span.logout span.logout-button-text,
+#header span.quick span.yoo-login span.logout span.logout-button-icon { margin-right: 0px; }
+
+/* nifty quick */
+#header span.niftyquick span.yoo-login {}
+
+#header span.niftyquick span.yoo-login span.login {
+	width: 268px;
+	height: 50px;
+}
+
+#header span.niftyquick span.yoo-login span.login span.login-button { margin-right: 0px; }
+
+#header span.niftyquick span.yoo-login span.login span.lostpassword, 
+#header span.niftyquick span.yoo-login span.login span.lostusername,
+#header span.niftyquick span.yoo-login span.login span.registration { margin-top: 5px; }
+
+#header span.niftyquick span.yoo-login span.logout {
+	margin-top: 10px;
+	overflow: visible;
+}
+
+#header span.niftyquick span.yoo-login span.logout span.logout-button { margin-right: 0px; }
+
+ 
+#header span.niftyquick span.yoo-login span.login span.username input,
+#header span.niftyquick span.yoo-login span.login span.password input {
+	width: 95%;
+	height: 12px;
+	background: #ffffff;
+	border: 1px solid #ffffff;
+	overflow: hidden;
+}

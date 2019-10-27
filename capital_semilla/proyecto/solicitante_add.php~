@@ -1,0 +1,293 @@
+<?php
+    $server=$_SERVER['SERVER_NAME']; // nombre del servidor web
+    $pag=$_SERVER['PHP_SELF'];  // el NOMBRE y ruta de esta misma p�ina.
+    $view=$_GET["view"];	
+    $pagina=$pag.'?view='.$view;
+
+    require("conexion/aut_config.inc.php");
+    $db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+
+    if (isset($_POST[save])){   // Insertar Datos del formulario
+        $cedula=$_POST['cedula'];		
+        $nacionalidad=$_POST['nacionalidad'];		
+        $cod_tipo_solicitante=$_POST['cod_tipo_solicitante'];
+        $nombreapellido=strtoupper($_POST["nombreapellido"]);
+        $sexo=$_POST['sexo'];
+        $fecha_nac=implode('-',array_reverse(explode('/',$_POST["fecha_nac"]))); 
+        $direccion=$_POST['direccion'];
+        $telefono=$_POST['telefono'];
+        $celular=$_POST['celular'];
+        $email=$_POST['email'];
+        
+        $query="SELECT insert_solicitante('$cedula','$nacionalidad','$cod_tipo_solicitante','$nombreapellido','$sexo','$fecha_nac','$direccion','$telefono','$celular','$email')";
+        $result = pg_query($query)or die(pg_last_error());
+        $result_insert=pg_fetch_array($result);
+        pg_free_result($result);
+        
+        if ($result_insert[0]==1){
+            $error="bien";
+        }else{
+            $error="Error";
+            $div_menssage='<div align="left">
+                    <h3 class="error">
+                        <font color="red" style="text-decoration:blink;">
+                            Error: La Cedula Ya existe Registrada, por favor verifique los datos!
+                        </font>
+                    </h3>
+                </div>';
+        }
+								    
+    }
+?>
+<!-- sincronizar mensaje cuando de muestra al usuario -->
+<?php if($div_menssage) { ?>					
+	<script type="text/javascript">
+		function ver_msg(){
+                    Effect.Fade('msg');
+		}  
+		setTimeout ("ver_msg()", 5000); //tiempo de espera en milisegundos
+	</script>
+ <?php } ?>
+<div align="center" class="centermain">
+    <div class="main">  
+        <table border="0" width="100%" align="center">
+            <tbody>			
+                <tr>
+                    <td  id="msg" align="center">		
+                        <?php echo $div_menssage;?>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="adminclientes" width="100%">
+            <tr>
+                <th>
+                    SOLICITANTE
+                </th>
+            </tr>
+        </table>
+	    					
+	<form id="QForm" name="QForm" method="POST" action="<?php echo $pagina?>" enctype="multipart/form-data">
+            <table class="adminform" border="0" width="100%">
+                <tr>
+                    <th colspan="2" align="center">
+                        <img src="images/add.png" width="16" height="16" alt="Nuevo Registro">
+                        INGRESAR DATOS DEL SOLICITANTE
+                    </th>
+                </tr>
+                <?php if ((isset($_POST[save])) and ($error=="bien")){	?> <!-- Mostrar Mensaje -->
+                <tr>
+                    <td colspan="2" align="center">
+                        <div align="center"> 
+                            <h3 class="info">	
+                                <font size="2">						
+                                    Datos registrados con &eacute;xito 
+                                    <br />
+                                    <script type="text/javascript">
+                                        function redireccionar(){
+                                            window.location="?view=solicitantes";
+                                        }  
+                                        setTimeout ("redireccionar()", 3000); //tiempo de espera en milisegundos
+                                    </script> 						
+                                    [<a href="?view=solicitantes" name="Continuar"> Continuar </a>]
+                                </font>							
+                            </h3>
+                        </div> 
+                    </td>
+                </tr>
+                <?php	}else{ 	?>   <!-- Mostrar formulario Original --> 
+                
+                <tr>
+                   <td  colspan="2"   height="18">
+                       <span> Los campos con <font color="Red" style="bold">(*)</font> son obligatorios</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="titulo" colspan="2" height="18"  align="left"><b>Información del Solicitante:</b></td>
+                </tr>
+                
+                <tr>
+                    <td colspan="2">
+                        <table class="borded" border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td  width="20%" height="22">
+                                            C&eacute;dula: <font color="Red">(*)</font>
+                                    </td>
+                                    <td  width="80%"  height="22">														
+                                        <table border="0" >
+                                            <tbody>
+                                                <tr>
+                                                    <td width="130">									
+                                                        <input size="10" class="inputbox validate[required]"  type="text" id="cedula" name="cedula"  value="<?php if ($error!="") echo $cedula;?>" /> 																																						
+                                                    </td>
+                                                    <td>
+                                                        Nacionalidad: <font color="Red">(*)</font>
+                                                    </td>
+                                                    <td>
+                                                        <select id="nacionalidad" name="nacionalidad" class="inputbox validate[required]" size="1">									
+                                                            <?php
+                                                                if($error!="") {
+                                                                    if($nacionalidad=="V") {
+                                                                        echo '<option value="'.$nacionalidad.'" selected="selected">VENEZOLANA</option>';
+                                                                    }else {
+                                                                        echo '<option value="'.$nacionalidad.'" selected="selected">EXTRANJERA</option>';
+                                                                    }
+                                                                }																					
+                                                            ?>
+                                                            <option value="" >---</option>
+                                                            <option value="V" >VENEZOLANA</option>
+                                                            <option value="E">EXTRANJERA</option>																						
+                                                        </select>															
+                                                    </td>																	
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>	
+
+                                <tr>
+                                    <td>
+                                        Nombres y Apellidos: <font color="Red">(*)</font>
+                                    </td>
+                                    <td>
+                                        <input class="validate[required] text-input" type="text" id="nombreapellido" name="nombreapellido" value="<?php if ($error!="") echo $nombreapellido;?>"  size="50" maxlength="50"/>																	
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                            Sexo: <font color="Red">(*)</font>
+                                    </td>
+                                    <td>														
+                                        <table border="0" >
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <select id="sexo" name="sexo" class="inputbox validate[required]" size="1">									
+                                                            <?php
+                                                                if($error!="") {
+                                                                    if($sexo=="F") {
+                                                                        echo '<option value="'.$sexo.'" selected="selected">FEMENINO</option>';
+                                                                    }else {
+                                                                        echo '<option value="'.$sexo.'" selected="selected">MASCULINO</option>';
+                                                                    }
+                                                                }																					
+                                                            ?>
+                                                            <option value="" >---</option>
+                                                            <option value="F">FEMENINO</option>
+                                                            <option value="M">MASCULINO</option>																						
+                                                        </select>														
+                                                    </td>
+                                                    <td>
+                                                        Fecha Nacimiento: <font color="Red">(*)</font>
+                                                        <input class="validate[required,custom[date],past[NOW]]" name="fecha_nac" type="text" value="<?php if ($error!="") echo implode('/',array_reverse(explode('-',$fecha_nac)));?>"  id="fecha_nac"  size="10" maxlength="10" onKeyPress="ue_formatofecha(this,'/',patron,true);"  />
+                                                        <img src="images/calendar.gif" title="Abrir Calendario..." alt="Abrir Calendario..." onclick="displayCalendar(document.forms[0].fecha_nac,'dd/mm/yyyy',this);">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        Tipo de Solicitante: <font color="Red">(*)</font>
+                                    </td>
+                                    <td>														
+                                        <select id="cod_tipo_solicitante" name="cod_tipo_solicitante" class="inputbox validate[required]" size="1">
+                                            <option value="">---</option>
+                                            <?php 
+                                                $consulta_sql=pg_query("SELECT * FROM tipo_solicitantes ");
+                                                while ($array_consulta=pg_fetch_array($consulta_sql)){
+                                                    if ($error!=""){
+                                                        if ($array_consulta[0]==$cod_tipo_solicitante){
+                                                            echo '<option value="'.$array_consulta[0].'"  selected="selected">'.$array_consulta[1].'</option>';																			
+                                                        }else{
+                                                            echo '<option value="'.$array_consulta[0].'">'.$array_consulta[1].'</option>';																			
+                                                        }
+                                                    }else{
+                                                        echo '<option value="'.$array_consulta[0].'">'.$array_consulta[1].'</option>';																			
+                                                    }
+                                                }																																						
+                                                pg_free_result($consulta_sql);								
+                                            ?>																												
+                                        </select>														
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Direcci&oacute;n de Habitaci&oacute;n:  <font color="Red">(*)</font>
+                                    </td>
+                                    <td>
+                                        <input class="validate[required] text-input" type="text" id="direccion" name="direccion" value="<?php if ($error!="") echo $direccion;?>"  size="60" maxlength="150"/>	
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        Tel&eacute;fono Hab.:
+                                    </td>
+                                    <td>														
+                                        <table border="0" >
+                                            <tbody>
+                                                <tr>
+                                                    <td width="130">
+                                                        <input class="validate[custom[phone]] text-input" placeholder="(0212)-1234567" title="Ej.: (0212)-1234567" id="telefono" type="text" name="telefono" size="15" value="<?php if ($error!="") echo $telefono;?>" maxlength="15"/>														
+                                                    </td>
+                                                    <td>
+                                                        Tel&eacute;fono Cel.:
+                                                    </td>
+                                                    <td>
+                                                        <input class="validate[custom[phone]] text-input" placeholder="(0414)-1234567" title="Ej.: (0414)-1234567" id="celular" type="text" name="celular" size="15" value="<?php if ($error!="") echo $celular;?>" maxlength="15"/>														
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        Correo Electr&oacute;nico:
+                                    </td>
+                                    <td>
+                                        <input class="validate[custom[email]] text-input" placeholder="minombre@ejemplo.com" title="Ej.: minombre@ejemplo.com" type="text" id="email" name="email" size="50" value="<?php if ($error!="") echo $email;?>" maxlength="50"/>																		
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>	
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="botones" align="center" >			
+                        <input type="submit" class="button" name="save" value="  Guardar  " >
+                        <input  class="button" type="button" onclick="javascript:window.location.href='?view=solicitantes'" value="Cerrar" name="cerrar" />  
+                    </td>													
+                </tr> 
+            <?php }  ?>	
+        </table>
+    </form>     
+    <br>	 
+    </div>
+</div> 
+        
+<script type="text/javascript">
+	var dtabs=new ddtabcontent("divsG")
+	dtabs.setpersist(true)
+	dtabs.setselectedClassTarget("link") //"link" or "linkparent"
+	dtabs.init()
+</script>		
+
+<script type="text/javascript" >
+	jQuery(function($) {
+	      $.mask.definitions['~']='[JVGjvg]';
+	      //$('#fecha_nac').mask('99/99/9999');
+      
+	      $('#telefono').mask('(9999)-9999999');
+	      $('#celular').mask('(9999)-9999999');
+	      
+	});
+</script>
+

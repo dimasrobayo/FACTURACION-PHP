@@ -1,0 +1,12 @@
+/* custom.css, Copyright (C) 2007 - 2010 YOOtheme GmbH */
+
+/*
+ * This CSS file is for customization purpose only
+ */ 
+
+#logo a.logo-icon {
+	display: block;
+	width: 970px;
+	height: 220px;
+	background: url(../../../images/yootheme/logo.png) 0 0 no-repeat;
+}

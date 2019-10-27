@@ -1,0 +1,500 @@
+<?php
+	// chequear si se llama directo al script.
+	if(!defined('INCLUDE_CHECK')){
+		echo ('<div align="center"><img  src="../../images/acceso.png" width="237" height="206"/> <br /> No est&aacute; autorizado para realizar esta acci&oacute;n o entrar en esta P&aacute;gina </div>');
+		//die('Usted no está autorizado a ejecutar este archivo directamente');
+		exit;
+	}
+	if ($_SERVER['HTTP_REFERER'] == "")	{
+		echo "<script type='text/javascript'>window.location.href='index.php'</script>";
+		exit;
+	}
+        
+//	require ("../aut_sys_config_email.inc.php"); //consultar datos de variable
+//	require ("../connect.php");
+//	
+	$server=$_SERVER['SERVER_NAME']; // nombre del servidor web
+	$pag=$_SERVER['PHP_SELF'];  // el NOMBRE y ruta de esta misma p�ina.
+	$view=$_GET["view"];	
+	$pagina=$pag.'?view='.$view;
+	
+	
+	if (isset($_GET['cedula'])){ // Recibir los Datos 
+		$cedula= $_GET['cedula'];		
+	}	
+	
+	if (isset($_POST[save])){   // Insertar Datos del formulario
+		$error="bien";	
+	
+		$cedula=$_POST['cedula'];		
+		$igl_cod_iglesia_mision=$_POST['igl_cod_iglesia_mision'];
+		$nombre_iglesia_mision=strtoupper($_POST["igl_nombre_iglesia_mision"]);
+		if($igl_cod_iglesia_mision!="") {
+                    $existe_iglesia=1;
+		}else {
+                    $existe_iglesia=0;
+		}
+		$nombreapellido=strtoupper($_POST['nombreapellido']);
+		$nacionalidad=$_POST['nacionalidad'];
+		$sexo=$_POST['sexo'];
+		$fecha_nacimiento=implode('-',array_reverse(explode('/',$_POST["fecha_nacimiento"]))); 
+		$estado_civil=$_POST['estado_civil'];
+		$fecha_matrimonio=implode('-',array_reverse(explode('/',$_POST["fecha_matrimonio"])));
+		$cod_discapacidad=$_POST['cod_discapacidad'];
+		$codpais=$_POST['codpais'];
+		$codest=$_POST['codest'];
+		$codmun=$_POST['codmun'];
+		$codpar=$_POST['codpar'];		
+		$ciudad=strtoupper($_POST['ciudad']);
+		$direccion=$_POST['direccion'];
+		$telefono=$_POST['telefono'];
+		$celular=$_POST['celular'];
+		$correoe=$_POST['correoe'];
+		$cod_nivelacademico=$_POST['cod_nivelacademico'];	
+		$titulo_academico=$_POST['titulo_academico'];
+		$profesion=$_POST['profesion'];			
+		$status=1;
+		$status_persona_pastor=$_POST['status_persona_pastor'];
+		if (isset($_POST["afiliacion_um"])){	
+			$afiliacion_um=1;
+			$anno_afiliacion_um=$_POST['anno_afiliacion_um'];
+		}else {
+			$afiliacion_um=0;
+			$anno_afiliacion_um=0;
+		}		
+		$cod_evento=$_POST["cod_evento"];
+		$cod_condicion_participacion=$_POST["cod_condicion_participacion"];
+		$cod_plan=$_POST["cod_plan"];
+		if (isset($_POST["cod_tipo_alojamiento"])) $cod_tipo_alojamiento=$_POST["cod_tipo_alojamiento"]; else $cod_tipo_alojamiento=1;
+		$comidas=$_POST["comidas"];
+		$prematricula=$_POST["prematricula"];
+		$fecha_fin_prematricula=implode('-',array_reverse(explode('/',$_POST["fecha_fin_prematricula"])));
+		if($comidas!="NO") {
+			if (isset($_POST["comida_dieta"])){
+				$comida_dieta=$_POST["comida_dieta"];
+			}else {
+				$comida_dieta=0;
+			}		
+		}else {
+			$comida_dieta=0;	
+		}
+		if($_POST["costo_normal"]!=0.00) {
+                    if($prematricula!="NO") {
+                            if (isset($_POST["condicion_plan_evento"])){					
+                                    $condicion_plan_evento=$_POST["condicion_plan_evento"];
+                                    $monto_inscripcion=$_POST["costo_prematricula"];
+                            }else {
+                                    $condicion_plan_evento="NORMAL";
+                                    $monto_inscripcion=$_POST["costo_normal"];		
+                            }			
+                    }else {
+                            $condicion_plan_evento="NORMAL";
+                            $monto_inscripcion=$_POST["costo_normal"];	
+                    }
+                }else{
+                    $condicion_plan_evento="EXONERADO";
+                    $monto_inscripcion=$_POST["costo_normal"];
+                }
+                
+		$status_fp_deposito=$_POST["status_fp_deposito"];
+		$nro_deposito=$_POST["nro_deposito"];
+		$cod_banco_deposito=$_POST["cod_banco"];
+		$cod_cuenta_banco=$_POST["cod_cuenta_banco"];
+		$fecha_deposito=implode('-',array_reverse(explode('/',$_POST["fecha_deposito"])));
+		$monto_deposito=$_POST["monto_deposito"];
+		$status_inscripcion=0;		
+		if (isset($_POST["declaracion"])){	
+			$declaracion=1;
+		}else {
+			$declaracion=0;
+		}		
+                $cod_region_unfbmv=$_POST["cod_region_unfbmv"];
+					
+		// Insertar Datos de Participantes
+		$query="INSERT INTO personas (cedula,cod_iglesia_mision,nombre_persona,nacionalidad,sexo,fecha_nac,estado_civil,fecha_matrimonio, ".
+			" cod_discapacidad,codpais,codest,codmun,codpar,ciudad,direccion_hab,telefono,celular,correoe,cod_nivelacademico,titulo_academico,profesion,fecha_registro,fecha_registro_update, ".
+			" status_persona,status_persona_pastor,afiliacion_um,anno_afiliacion_um)".
+			"  values('$cedula','$igl_cod_iglesia_mision','$nombreapellido','$nacionalidad', ".
+			" '$sexo','$fecha_nacimiento','$estado_civil','$fecha_matrimonio','$cod_discapacidad','$codpais', ".
+			" '$codest','$codmun','$codpar','$ciudad','$direccion','$telefono','$celular','$correoe',".
+			" '$cod_nivelacademico','$titulo_academico','$profesion',now(),'','$status','$status_persona_pastor','$afiliacion_um','$anno_afiliacion_um')";								
+		$result=mysql_query($query) or die('La consulta fall&oacute;: ' . mysql_error());
+			
+		if(mysql_affected_rows()){ // Verificamos y Insertamos la Inscripcion	
+			$query="INSERT INTO inscripciones (cedula,existe_iglesia,nombre_iglesia_mision,cod_tipo_alojamiento,cod_evento,cod_plan, ".
+					" cod_condicion_participacion,comida_dieta,condicion_plan_evento,monto_inscripcion,fecha_registro,status_fp_deposito, ".
+					" cod_banco_deposito,cod_cuenta_banco,nro_deposito,fecha_deposito,monto_deposito,status_inscripcion,fecha_status_inscripcion,fecha_registro_update, ".
+					" cod_region_unfbmv,declaracion) values('$cedula','$existe_iglesia','$nombre_iglesia_mision','$cod_tipo_alojamiento', '$cod_evento','$cod_plan', ".
+					" '$cod_condicion_participacion','$comida_dieta','$condicion_plan_evento','$monto_inscripcion',now(),'$status_fp_deposito', ".
+					" '$cod_banco_deposito','$cod_cuenta_banco','$nro_deposito','$fecha_deposito','$monto_deposito','$status_inscripcion','','','$cod_region_unfbmv','$declaracion')";								
+			$result=mysql_query($query) or die('La consulta fall&oacute;: ' . mysql_error());
+						
+			// ---- Enviar correos de Notificacion a los responsables ---//
+				$query=mysql_query("SELECT *, CASE  WHEN (MONTH(personas.fecha_nac) < MONTH(current_date)) THEN YEAR(current_date) - YEAR(personas.fecha_nac) ".
+				 " WHEN (MONTH(personas.fecha_nac) = MONTH(current_date)) AND (DAY(personas.fecha_nac) <= DAY(current_date)) THEN YEAR(current_date) - YEAR(personas.fecha_nac) ".
+				 " ELSE (YEAR(current_date) - YEAR(personas.fecha_nac)) - 1 END AS edad FROM personas,inscripciones,eventos,planes,condicion_participacion, ".
+				 " discapacidades,tipos_alojamiento WHERE inscripciones.cedula='$cedula' and inscripciones.cod_evento='$cod_evento' ".
+				 " and personas.cedula=inscripciones.cedula and eventos.cod_evento=inscripciones.cod_evento and planes.cod_plan=inscripciones.cod_plan and ".
+				 " condicion_participacion.cod_condicion_participacion=inscripciones.cod_condicion_participacion and ".
+				 " discapacidades.cod_discapacidad=personas.cod_discapacidad and tipos_alojamiento.cod_tipo_alojamiento=inscripciones.cod_tipo_alojamiento")or die('La consulta fall&oacute;: ' . mysql_error());
+				$consulta_inscripcion=mysql_fetch_array($query);
+				mysql_free_result($query);		
+				
+				if($consulta_inscripcion['sendmail_coordinador']==1) {					
+				$body="Hola $consulta_inscripcion[nombre_coordinador],<br><br> ".
+					" Se ha registrado un nuevo participante al Evento $consulta_inscripcion[nombre_evento]. <br> ".
+					" Este mensaje contiene los detalles: <br><br> ".
+					" <strong>Código Inscripción:</strong> $consulta_inscripcion[cod_inscripcion]<br> ".
+					" <strong>Cédula o Pasaporte:</strong> $consulta_inscripcion[cedula]<br> ".
+					" <strong>Nombres y apellidos:</strong> $consulta_inscripcion[nombre_persona]<br> ".
+					" <strong>Iglesia:</strong> $consulta_inscripcion[nombre_iglesia_mision]<br> ".
+					" <strong>Evento:</strong> $consulta_inscripcion[nombre_evento]<br> ".
+					" <strong>Plan de Inscripción:</strong> $consulta_inscripcion[nombre_plan]; $consulta_inscripcion[descripcion_plan]<br>".
+					" <strong>Tipo de Inscripcion:</strong> $consulta_inscripcion[condicion_plan_evento]<br>".
+					" <strong>Monto de Inscripcion:</strong> $consulta_inscripcion[monto_inscripcion]<br><br>".
+					" <a href=\"$server$pag?cedula=$consulta_inscripcion[cedula]\" target=\"_blank\"> ".
+					" Pulse aquí para Visualizar la Planilla de Registro de Datos</a><br><br>".
+					" No responda a este mensaje ya que ha sido generado automáticamente para su información.";						
+				$mail->Subject    = "Detalle de Inscripción en $consulta_inscripcion[nombre_evento]";
+				$mail->AltBody    = "Detalles de la Inscripción!"; // optional, comment out and test
+				$mail->MsgHTML($body);						
+				$mail->AddAddress($consulta_inscripcion[correoe_coordinador], $consulta_inscripcion[nombre_coordinador]);
+				$mail->Send();
+				$mail->ClearAddresses();
+			}
+					
+		}
+		mysql_close($db_connect);										    
+	}//fin del add	
+?>
+
+<!-- sincronizar mensaje cuando de muestra al usuario -->
+<?php if($div_menssage) { ?>					
+	<script type="text/javascript">
+		function ver_msg(){
+		 	Effect.Fade('msg');
+		}  
+		setTimeout ("ver_msg()", 5000); //tiempo de espera en milisegundos
+	</script>
+ <?php } ?>			    					
+<!--aqui es donde esta el diseño del formulario-->
+<div align="left">
+    <h4>REGISTRAR SOLICITUD</h4>				
+</div>
+<br />
+<table border="0" width="100%" align="center">
+    <tbody>			
+        <tr>
+            <td  id="msg" align="center">		
+                <?php echo $div_menssage;?>
+            </td>
+        </tr>
+    </tbody>
+</table>			    					
+
+<form method="POST" action="<?php echo $pagina?>" id="QForm" name="QForm" enctype="multipart/form-data">		
+<table class="adminform"  width="600px" align="center">
+	<tr>
+		<th colspan="2" align="center">
+			<img src="images/add.png" width="16" height="16" alt="Nuevo Registro de Inscripción">
+			Información de la Solicitud
+		</th>
+	</tr>
+   <?php if ((isset($_POST[save])) and ($error=="bien")){	?> <!-- Mostrar Mensaje -->
+   <tr>
+		<td colspan="2" align="center">
+			<div align="center"> 
+				<h3 class="info">	
+					<font size="2">						
+						Datos de Inscripción registrados con &eacute;xito 
+						<br />
+						<!-- <meta http-equiv="refresh" content="3; URL=?view=user<?php echo '&submenuheader='.$submenuheader;?>"> -->
+						<script type="text/javascript">
+   						function redireccionar(){
+    							window.location="?cedula=<?php echo $cedula;?>";
+   						}  
+ 							setTimeout ("redireccionar()", 3000); //tiempo de espera en milisegundos
+						</script> 						
+						[<a href="?cedula=<?php echo $cedula;?>" name="Continuar"> Continuar </a>]
+					</font>							
+				</h3>
+			</div> 
+		</td>
+	</tr>
+	<?php	}else	{ 	?>   <!-- Mostrar formulario Original --> 
+	
+	<tr>
+	   <td  colspan="2"   height="18">
+		   <span> Los campos con <font color="Red" style="bold">(*)</font> son obligatorios</span>
+		</td>
+	</tr>
+	
+						
+	   <tr>
+			<td class="titulo" colspan="2" height="18"  align="left"><b>Información del Ciudadano:</b></td>
+      </tr>					
+						
+		<tr>
+			<td  width="25%" height="22">
+				C&eacute;dula:
+			</td>
+			<td  width="75%"  height="22">														
+				<table border="0" >
+					<tbody>
+						<tr>
+							<td width="130">									
+								<input type="hidden" id="cedula" name="cedula"  value="<?php echo $cedula;?>" />
+								<input size="10" class="inputbox validate[required]"  readonly="readonly" type="text" name="cedula1"  value="<?php echo $cedula;?>" /> 																																						
+							</td>
+							<td>
+								Nacionalidad: <font color="Red">(*)</font>
+							</td>
+							<td>
+								<select id="nacionalidad" name="nacionalidad" class="inputbox validate[required]" size="1">									
+									<option value="" >---</option>
+									<option value="V">VENEZOLANA</option>
+									<option value="E">EXTRANJERA</option>																						
+								</select>															
+							</td>																	
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>	
+		
+		<tr>
+			<td>
+				Nombres y Apellidos: <font color="Red">(*)</font>
+			</td>
+			<td>
+				<input class="validate[required] text-input" type="text" id="nombreapellido" name="nombreapellido" value="" onkeyup = "this.value=this.value.toUpperCase()" size="50" maxlength="50"/>																	
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				Sexo: <font color="Red">(*)</font>
+			</td>
+			<td>														
+				<table border="0" >
+					<tbody>
+						<tr>
+							<td>
+								<select id="sexo" name="sexo" class="inputbox validate[required]" size="1">									
+									<option value="" >---</option>
+									<option value="F">FEMENINO</option>
+									<option value="M">MASCULINO</option>																						
+								</select>														
+							</td>
+							<td>
+								Fecha Nacimiento: <font color="Red">(*)</font>
+								<input class="validate[required,custom[date],past[NOW]]" name="fecha_nacimiento" type="text" value=""  id="fecha_nacimiento"  size="10" maxlength="10" onKeyPress="ue_formatofecha(this,'/',patron,true);" onblur="cargarEdad();" />
+		              		<img src="images/calendar.gif" title="Abrir Calendario..." alt="Abrir Calendario..." onclick="displayCalendar(document.forms[0].fecha_nacimiento,'dd/mm/yyyy',this);">
+							</td>
+							<td>
+								<div id="edad">
+									<input name="edad" type="hidden" value=""   id="edad"  size="1" maxlength="2" />	
+								</div>																						
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+				Tipo de Solicitante: <font color="Red">(*)</font>
+			</td>
+			<td>														
+                            <select id="estado_civil" name="estado_civil" class="inputbox validate[required]" onchange="activarfecham();" size="1">
+                                    <option value="" >---</option>
+                                    <option value="SOLTERO(A)">SOLTERO(A)</option>
+                                    <option value="CASADO(A)">CASADO(A)</option>	
+                                    <option value="DIVORCIADO(A)">DIVORCIADO(A)</option>	
+                                    <option value="VIUDO(A)">VIUDO(A)</option>																												
+                            </select>														
+			</td>
+		</tr>
+                <tr>
+                        <td>
+                                Direcci&oacute;n de Habitaci&oacute;n:  <font color="Red">(*)</font>
+                        </td>
+                        <td>
+                                <input class="validate[required] text-input" type="text" id="direccion" name="direccion" value=""  size="60" maxlength="150"/>	
+                        </td>
+                </tr>
+		
+		
+		<tr>
+			<td>
+				Tel&eacute;fono Hab.:
+			</td>
+			<td>														
+				<table border="0" >
+					<tbody>
+						<tr>
+							<td width="130">
+								<input class="validate[custom[phone]] text-input" placeholder="(0212)-1234567" title="Ej.: (0212)-1234567" id="telefono" type="text" name="telefono" size="15" value="" maxlength="15"/>														
+							</td>
+							<td>
+								Tel&eacute;fono Cel.:
+							</td>
+							<td>
+								<input class="validate[custom[phone]] text-input" placeholder="(0414)-1234567" title="Ej.: (0414)-1234567" id="celular" type="text" name="celular" size="15" value="" maxlength="15"/>														
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				Correo Electr&oacute;nico:
+			</td>
+			<td>
+				<input class="validate[custom[email]] text-input" placeholder="minombre@ejemplo.com" title="Ej.: minombre@ejemplo.com" type="text" id="correoe" name="correoe" size="50" value="" maxlength="50"/>																		
+			</td>
+		</tr>	
+			
+	<tr>
+		<td class="titulo" colspan="2" height="18"  align="left"><b>Información de la solicitud:</b></td>
+        </tr>
+        <tr>
+        <td>Tipo Solicitud: <font color="Red">(*)</font></td>
+        <td>
+			<div id="contenedor_eventos">
+				<select name="cod_evento" id="cod_evento" class="validate[required]"  onchange="cargarContenidoCondicionPlan(); activarcondparticipacion(); activarplan();">
+					<option selected="selected" value="">Seleccione un Evento</option>
+					<?php 
+						$consulta_sql=mysql_query("SELECT *, (nro_cupos - (select count(*)  from inscripciones where inscripciones.cod_evento=eventos.cod_evento)) AS cupos_disponibles FROM eventos WHERE status_preinscripcion='1' and fecha_ini_preinscripcion<=current_date and fecha_fin_preinscripcion>=current_date AND (nro_cupos - (select count(*)  from inscripciones where inscripciones.cod_evento=eventos.cod_evento))>0 order by nombre_evento");
+						while ($array_consulta=mysql_fetch_array($consulta_sql)){																																				
+							echo '<option value="'.$array_consulta[0].'">'.$array_consulta[1].'</option>';																			
+						}																																						
+						mysql_free_result($consulta_sql);								
+					?>				
+				</select> 
+				<img src="images/ayuda.png" width="16" height="16" alt="Ayuda" onmouseover="muestraAyuda(event, 'Evento','Seleccione el Evento a Inscribir, luego seleccione el tipo de asistencia y plan de inscripción del evento',' (Campo Requerido)')">														
+			</div>
+      </td>
+  	</tr>
+ 	<tr id="condicion_participacion">
+  		<td>Tramite de Solicitud: <font color="Red">(*)</font></td>
+  		<td>
+	  		<div id="contenedor_condicion_participacion">
+				<select name="cod_condicion_participacion" id="cod_condicion_participacion" class="validate[required]"  >
+					<option  selected="selected" value="">Seleccione...</option>
+				</select>
+			</div>											 
+  		</td>
+   </tr>
+	<tr id="parroquias">
+		<td>
+			Parroquia: <font color="Red">(*)</font>
+		</td>
+		<td>		
+			<div id="contenedor3">			
+				<select name="codpar" id="codpar" class="validate[required]" style="width:180px" >
+				<option value="">----</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+	<tr id="comunidades">
+		<td>
+			Comunidades: <font color="Red">(*)</font>
+		</td>
+		<td>		
+			<div id="contenedor3">			
+				<select name="codpar" id="codpar" class="validate[required]" style="width:180px" >
+				<option value="">----</option>
+				</select>
+			</div>
+		</td>
+	</tr>
+        <tr>
+                <td>
+                        Barrio/Sector: <font color="Red">(*)</font>
+                </td>
+                <td>
+                        <input class="validate[required] text-input" type="text" id="ciudad" name="ciudad" value="" onkeyup = "this.value=this.value.toUpperCase()" size="30" maxlength="50"/>																	
+                </td>
+        </tr>
+		
+        
+  
+  	
+   <tr id="condicion_participacion">
+            <td>Monto de Solicitud: <font color="Red">(*)</font></td>
+            <td>
+                <div id="contenedor_fecha_dep">
+                    <input name="fecha_deposito" type="text" class="validate[required,custom[date],past[NOW]]" value=""  id="fecha_deposito"  size="10" maxlength="10" onKeyPress="ue_formatofecha(this,'/',patron,true);"/>
+                    <img src="images/calendar.gif" title="Abrir Calendario..." alt="Abrir Calendario..." onclick="displayCalendar(document.forms[0].fecha_deposito,'dd/mm/yyyy',this)">												              								
+                </div>    
+            </td>
+   </tr>
+   
+        <tr>
+                <td colspan="2">
+                        <table class="borded" border="0" cellpadding="0" cellspacing="1" width="100%">
+                                <tbody>												
+                                        <tr >
+                                                <td>
+                                                        <input id="declaracion" class="validate[required]" name="declaracion"  type="checkbox">DECLARO
+                                                        QUE LOS DATOS POR MI SUMINISTRADOS SON VERDADEROS Y
+                                                        AUTORIZO COMPROBAR LA VERACIDAD DE LOS
+                                                        MISMOS.	
+                                                </td>
+                                        </tr>
+                                </tbody>
+                        </table>
+                </td>
+        </tr>
+        <tr>
+		<td colspan="2" class="botones" align="center" >			
+			<input  class="button" type="submit" name="save" value="   Enviar   " />			
+			<input  class="button" type="button" onclick="javascript:window.location.href='index.php';" value="Cerrar" name="cerrar" /> 
+		</td>													
+	</tr> 
+<?php	}  ?>	
+</table>
+</form>   
+<br>	
+<script type="text/javascript">
+	var dtabs=new ddtabcontent("divsG")
+	dtabs.setpersist(true)
+	dtabs.setselectedClassTarget("link") //"link" or "linkparent"
+	dtabs.init()
+</script>		
+<script type="text/javascript" >
+	jQuery(function($) {
+	      $.mask.definitions['~']='[JVGjvg]';
+	      //$('#fecha_nac').mask('99/99/9999');
+	      //$('#fecha_deposito').mask('99/99/9999');
+	      $('#telefono').mask('(9999)-9999999');
+	      $('#celular').mask('(9999)-9999999');
+	      $('#telefono_trabajo').mask('(9999)-9999999');
+	      $('#telefono_fax').mask('(9999)-9999999');
+	      $('#rif_iglesia').mask('~-99999999-9');
+	      //$('#phoneext').mask("(999) 999-9999? x99999");
+	      //$("#tin").mask("99-9999999");
+	      //$("#ssn").mask("999-99-9999");
+	      //$("#product").mask("a*-999-a999",{placeholder:" ",completed:function(){alert("Ha escrito lo siguiente: "+this.val());}});
+	      //$("#eyescript").mask("~9.99 ~9.99 999");
+	      
+	   });
+	   
+   function ue_buscariglesia()	{		   	
+		document.QForm.igl_cod_iglesia_mision.value="";
+		document.QForm.igl_nombre_iglesia_mision.value="";			
+		
+		document.QForm.iglesia_existe.disabled=false;
+		document.QForm.iglesia_existe.checked=false;
+										
+		window.open("catalogos/cat_iglesias.php","catalogo","menubar=no,toolbar=no,scrollbars=yes,width=565,height=500,left=50,top=50,location=no,resizable=no");
+	}	
+</script>
+
+	    					
+			    				   				

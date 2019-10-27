@@ -1,0 +1,172 @@
+<?php
+    $redir=$_SERVER['HTTP_REFERER']; // Ruta para redireccionar a la pagina que nos llamo
+    $pag=$_SERVER['PHP_SELF'];  // el NOMBRE y ruta de esta misma p�ina.
+    $type=$_GET["view"];
+    $pagina=$pag.'?view='.$type;
+    
+    require("conexion/aut_config.inc.php");
+    $db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");	
+
+    if (isset($_GET['cod_unidad'])){
+    	$datos_unidad= $_GET['cod_unidad'];
+    }
+
+    if (isset($_POST[save])) {
+        $categoria = trim($_POST['cod_categoria']);
+        $tramite = trim($_POST['tramite']);
+        $descripcion = trim($_POST['descripcion']);
+
+        $query = "insert into tramites (cod_categoria,nombre_tramite,descripcion_tramite) values ($categoria,'$tramite','$descripcion')";
+        $result = pg_query($query)or die(pg_last_error());
+
+        if(pg_affected_rows($result)){
+            $error="bien";
+        } else {
+            $error="Error";
+            $div_menssage='<div align="left">
+                        <h3 class="error">
+                            <font color="red" style="text-decoration:blink;">
+                                Error: No se pudo procesar la carga de datos. Por favor verifique!
+                            </font>
+                        </h3>
+                    </div>';	
+        }
+    }//fin del add        
+?>
+<!-- sincronizar mensaje cuando de muestra al usuario -->
+<?php if($div_menssage) { ?>					
+    <script type="text/javascript">
+        function ver_msg(){
+            Effect.Fade('msg');
+        }  
+        setTimeout ("ver_msg()", 5000); //tiempo de espera en milisegundos
+    </script>
+ <?php } ?>
+    
+<div align="center" class="centermain">
+    <div class="main">  
+        <table border="0" width="100%" align="center">
+            <tbody>			
+                <tr>
+                    <td  id="msg" align="center">		
+                        <?php echo $div_menssage;?>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="admintramites" width="100%">
+            <tr>
+                <th>
+                    Estados de Tramites:
+                </th>
+            </tr>
+        </table>
+        
+        <form method="POST" action="<?php echo $pagina?>" id="QForm" name="QForm" enctype="multipart/form-data">
+            <table class="adminform" border="0" width="100%">
+                <tr bgcolor="#55baf3">
+                    <th colspan="2">
+                        NUEVO REGISTRO A ALMACENAR
+                    </th>
+                </tr>
+                
+                <?php if ((isset($_POST[save])) and ($error=="bien")){	?> <!-- Mostrar Mensaje -->
+                
+                <tr>
+                    <td colspan="2" align="center">
+                        <div align="center"> 
+                            <h3 class="info">	
+                                <font size="2">						
+                                    Datos registrados con &eacute;xito 
+                                    <br />
+                                    <script type="text/javascript">
+                                        function redireccionar(){
+                                            window.location="?view=tramites";
+                                        }  
+                                        setTimeout ("redireccionar()", 3000); //tiempo de espera en milisegundos
+                                    </script> 						
+                                    [<a href="?view=tramites" name="Continuar"> Continuar </a>]
+                                </font>							
+                            </h3>
+                        </div> 
+                    </td>
+                </tr>
+                
+                <?php	}else{ 	?>   <!-- Mostrar formulario Original --> 
+                
+                <tr>
+                    <td colspan="2" height="16" align="left">
+                        <span> Los campos con <font color="Red" style="bold">(*)</font> son obligatorios</span>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td colspan="2">
+                        <table class="borded" border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tbody>
+                                
+                                <tr>
+                                    <td width="20%" align="right">
+                                        Categoria: <font color="Red">(*)</font>
+                                    </td>
+
+                                    <td>
+                                        <select id="cod_categoria" name="cod_categoria" size="0" class="validate[required]">
+                                            <option value="">----</option>	        
+                                                <?php
+                                                    $db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+                                                    $consulta=pg_query("select * from categorias order by cod_categoria");
+                                                    while ($array_consulta=pg_fetch_array($consulta)) {
+                                                         echo '<option value="'.$array_consulta[0].'">'.$array_consulta[1].'</option>';
+                                                    }
+                                                    pg_free_result($consulta);
+                                                ?>
+                                        </select>	
+                                    </td>			
+                               </tr>
+
+                                <tr>
+                                    <td width="20%" align="right">
+                                        Tramite: <font color="Red">(*)</font>
+                                    </td>
+
+                                    <td>
+                                        <input  type="text" id="tramite" name="tramite" value="" onkeyup = "this.value=this.value.toUpperCase()" class="validate[required] text-input" size="60" maxlength="100"/>
+                                    </td>			
+                                </tr>
+
+                                <tr>
+                                    <td width="20%" align="right">
+                                        Descripci&oacute;n del Tramite: <font color="Red">(*)</font>
+                                    </td>
+
+                                    <td>
+                                        <textarea name="descripcion" id="descripcion" class="validate[required]" cols="80" rows="2"></textarea>				
+                                    </td>			
+                                </tr>
+
+                            </tbody>
+                        </table>	
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="botones" align="center" >			
+                        <input type="submit" class="button" name="save" value="  Guardar  " >
+                        <input  class="button" type="button" onclick="javascript:window.location.href='?view=tramites&cod_unidad=<?php echo $datos_unidad;?>'" value="Cerrar" name="cerrar" />  
+                    </td>													
+                </tr> 
+                
+                <?php }  ?>
+                
+            </table>
+        </form>
+        <br>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var dtabs=new ddtabcontent("divsG")
+    dtabs.setpersist(true)
+    dtabs.setselectedClassTarget("link") //"link" or "linkparent"
+    dtabs.init()
+</script>

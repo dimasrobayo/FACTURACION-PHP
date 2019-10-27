@@ -1,0 +1,36 @@
+<?php 
+    //  Autentificator
+    //  Gestión de Usuarios PHP+Mysql ó PostgreSQL
+    //  ------------------------------
+
+    // Configuracion General del Sistema
+    $sesion_name="proyecto_registro_civil"; // Nombre de la session
+
+    // Datos conexion a la Base de datos
+    $db_host="localhost";   // Host, nombre del servidor o IP del servidor BD
+    $db_user="root";        // Usuario de BD
+    $db_pass="DKStudio"; //*sqlalcaldia*           // contraseña de BD
+    $db_database="registrocivil"; //registrocivil       // Base de datos que se usuarios
+    $db_tabla_user="usuarios"; // Nombre de la tabla que contendra los datos de los usuarios
+    
+    // Datos del Sistema
+    $sistema_name="Registro Civil"; // Nombre de la empresa
+    $empresa="Alcaldia de Guanare"; // Nombre de la empresa
+    $enlace_logo="http://www.alcaldiaguanare.gob.ve"; // Nombre de la empresa
+    
+    // Datos de localidad
+    $cod_pais='058';
+    $cod_estado='018';
+    $cod_municipio='004';
+    
+    //Datos de Email
+    $name_email="amg.atencion.soberano@gmail.com";  //    "atencion.sac@gmail.com";
+    $send_email=1;    // Activar el envio de email al Usuario
+    $ip_server="200.11.228.3"; // Host, Ip Servidor de Alojamiento
+    $dir_name="registro_civil"; // Nombre del Directorio de Alojamiento del Sistema
+    
+    // Datos de Mensajeria
+    $send_sms=0;    // Activar el envio de sms al Usuario
+    
+    
+?>

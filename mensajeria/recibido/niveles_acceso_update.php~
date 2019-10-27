@@ -1,0 +1,163 @@
+<?php //seccion de mensajes del sistema.
+	$redir=$_SERVER['HTTP_REFERER']; // Ruta para redireccionar a la pagina que nos llamo
+	$pag=$_SERVER['PHP_SELF'];  // el NOMBRE y ruta de esta misma p�ina.
+	$type=$_GET["type"];
+	$pagina=$pag.'?type='.$type;
+
+//Conexion a la base de datos
+$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_empresa password=$sql_pass");
+?>
+
+<?php //seccion para recibir los datos y modificarlos.
+if (isset($_GET['codigo_nivel'])){
+	$datos_modificar= $_GET['codigo_nivel'];
+
+	//se le hace el llamado al archivo de conexion y luego se realiza el enlace.	
+	require("conexion/aut_config.inc.php");
+	$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");	
+
+	//se le hace el llamado a la funcion de insertar.	
+	$datos_consulta = pg_query("SELECT * FROM niveles_acceso where codigo_nivel = $datos_modificar") or die("No se pudo realizar la consulta a la Base de datos");
+
+	$resultados1=pg_fetch_array($datos_consulta);
+	pg_free_result($datos_consulta);
+	pg_close();
+}
+?> 
+
+<?php 
+if (isset($_POST[save]))
+{
+	$codigo = $_POST['codigo_nivel'];
+	$nombre = $_POST['nombre_nivel'];
+ 
+		$error="bien";	
+		//se le hace el llamado al archivo de conexion y luego se realiza el enlace.	
+		require("conexion/aut_config.inc.php");
+		$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");	
+
+
+		$passmd5=md5($pass);
+		//se le hace el llamado a la funcion de insertar.	
+		$inserta_registro = pg_query("SELECT update_niveles_acceso($codigo,'$nombre')") or die("NO SE PUEDE MODIFICAR LOS DATOS EN LA BASE DE DATOS.");		
+		$result_insert=pg_fetch_array($inserta_registro);	
+		$resultado_insert=$result_insert[0];
+
+		pg_free_result($inserta_registro);
+		//header ("Location: $pagina");
+		pg_close();	//exit;	   
+}//fin del procedimiento modificar.
+?>
+
+<div align="center" class="centermain">
+	<div class="main">  
+		<table class="admin_niveles">
+			<tr>
+				<th>
+						REGISTRO DE NIVELES DE USUARIO:
+					<small>
+						CAMBIO DE NIVELES DE ACCESO
+					</small>
+				</th>
+			</tr>
+		</table>
+        
+		<table class="adminform" border="0">
+			<tr bgcolor="#55baf3">
+				<th colspan="2">
+					MODIFICAR DATOS DE NIVELES DE USUARIO
+				</th>
+			</tr>
+
+			<?php 
+			if ((isset($_POST[save])) and ($error=="bien"))
+			{		
+			?> 
+			
+			<tr>
+				<td colspan="2" align="center">                        	
+					<br />
+					<strong>RESULTADO</strong>: 
+					<?php 
+					switch($resultado_insert)
+					{
+						case 0: 
+							echo 'ESTE REGISTRO NO SE PUDO MODIFICAR.';
+							break;
+						case 1: 
+							echo 'ESTE REGISTRO FUE MODIFICADO CON &Eacute;XITO.';	
+							break;	
+					}				
+					echo '<br />'.$msg;
+					?>
+					<br />	
+				</td>
+			</tr> 
+			
+			<table class="adminform" align="center">
+				<tr align="center">
+					<td width="100%" valign="top" align="center">
+						<div id="cpanel">
+							<div style="float:right;">
+								<div class="icon">
+									<a href="index2.php?type=niveles_acceso">
+										<img src="images/niveles_acceso.png" alt="salir" align="middle"  border="0" />
+										<span>Gestor de Datos</span>
+									</a>
+								</div>
+							</div>	
+						</div>
+					</td>
+				</tr>
+			</table>
+		
+			<?php 
+			}
+			else
+			{
+			?> 
+
+ 			<form method="POST" action="<?php echo $pagina?>" enctype="multipart/form-data">
+			<tr>
+				<td width="15%">
+					C&oacute;digo:
+				</td>
+				
+				<td width="85%">
+					<input id="codigo_nivel" name="codigo_nivel" value="<?php echo $resultados1[codigo_nivel]; ?>" readonly="true" class="inputbox" type="text"/>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('codigo_nivel');
+            		codigo.add(Validate.Presence);
+            		codigo.add( Validate.Numericality );
+         		</script>
+				</td>                       
+			</tr>
+			
+			<tr>
+				<td>
+					Nombres:
+				</td>
+				
+				<td>
+					<input value="<?php echo $resultados1[nombre_nivel]; ?>" class="inputbox" type="text" id="nombre_nivel" name="nombre_nivel" value="<?if ($error!="") echo $nombreapellido;?>" maxlength="25" size="25"/>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('nombre_nivel');
+            		codigo.add(Validate.Presence);
+            		codigo.add( Validate.texto );
+         		</script>				
+				</td>			
+			</tr>
+			
+			<tr bgcolor="#55baf3">
+				<td colspan="2" align="center">
+					<input type="submit" class="button" name="save" value="  Guardar  " >
+					<input  class="button" type="button" onClick="history.back()" value="Regresar">
+				</td>
+			</tr>
+		</form>			
+		</table>
+			<?php 
+			}
+			?> 		
+	</div>
+</div>

@@ -1,0 +1,320 @@
+<?php
+
+if (isset($_GET['error']))
+{
+	$error_accion_ms[0]= "La Empresa No puede ser Borrada.<br>Si desea borrarlo, primero cree uno nuevo.";
+	$error_accion_ms[1]= "Datos incompletos.";
+	$error_accion_ms[2]= "Contrase&ntilde;as no coinciden.";
+	$error_accion_ms[3]= "El Nivel de Acceso ha de ser num&eacute;rico.";
+	$error_accion_ms[4]= "El Usuario ya est&aacute; registrado.";
+	$error_accion_ms[5]= "Ya existe un usuario con el n&uacute;mero de c&eacute;dula que usted introdujo.";
+	$error_accion_ms[6]= "El n&uacute;mero de c&eacute;dula que usted introdujo no es v&aacute;lido.";
+	$error_cod = $_GET['error'];
+}
+
+	$redir=$_SERVER['HTTP_REFERER']; // Ruta para redireccionar a la pagina que nos llamo
+	$pag=$_SERVER['PHP_SELF'];  // el NOMBRE y ruta de esta misma p�ina.
+	$type=$_GET["type"];
+	$pagina=$pag.'?type='.$type;
+
+//Conexion a la base de datos
+$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+?>
+	
+<?php 
+if (isset($_POST[save]))
+{
+	$rif_empresa = $_POST['rif_empresa'];
+	$nombre_empresa = $_POST['nombre_empresa'];
+	$nombre_administrador = $_POST['nombre_administrador'];
+	$ciudad = $_POST['ciudad'];
+	$telefono_oficina = $_POST['telefono_oficina'];
+	$telefono_fax = $_POST['telefono_fax'];
+	$pagina_web = $_POST['pagina_web'];
+	$correo_electronico = $_POST['correo_electronico'];
+	$logo_empresa = $_POST['rif_empresa'];
+	$direccion_empresa = $_POST['direccion_empresa'];
+	$prefijo = $logo_empresa;
+ 
+	//aqui es para los logos de la empresa
+	$logo_empresa = $_POST['rif_empresa'];
+	$prefijo = $logo_empresa;
+	$logo_name = $HTTP_POST_FILES['logo_empresa']['name'];
+	$tipo_archivo = $HTTP_POST_FILES['logo_empresa']['type'];
+	$tamano_archivo = $HTTP_POST_FILES['logo_empresa']['size']; 
+    
+	if (($nombre_empresa=="") || ($nombre_administrador==""))
+	{
+			$error='<div align="left">
+							<h3 class="error">
+								<font color="red" style="text-decoration:blink;">
+									Error: Datos Incompletos, por favor verifique los datos!
+								</font>
+							</h3>
+						</div>';
+	}
+		else
+		{
+				// guardamos el archivo a la carpeta files
+				$destino =  "logo_empresa/".$prefijo;
+				if (copy($_FILES['logo_empresa']['tmp_name'],$destino)) 
+				{
+					$status = "Archivo subido: <b>".$logo_name."</b>";
+					
+					require("conexion/aut_config.inc.php");
+					$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");	
+					
+					$error="bien";
+					
+					$inserta_usuario = pg_query("SELECT insert_empresa('$rif_empresa','$nombre_empresa','$nombre_administrador','$ciudad','$telefono_oficina','$telefono_fax','$pagina_web','$correo_electronico','$logo_empresa','$direccion_empresa')") or die("No se pudo insertar el registro en la Base de datos");		
+					$inserta_auditoria = pg_query("SELECT insert_empresa('$rif_empresa','$nombre_empresa','$nombre_administrador','$ciudad','$telefono_oficina','$telefono_fax','$pagina_web','$correo_electronico','$logo_empresa','$direccion_empresa')") or die("No se pudo insertar el registro en la Base de datos");		
+					$result_insert=pg_fetch_array($inserta_usuario);	
+					pg_free_result($inserta_usuario);
+					$resultado_insert=$result_insert[0];
+					pg_close();	
+					//exit;
+				}
+				else 
+				{
+					$error = '<div align="left">
+								<h3 class="error">
+									<font color="red" style="text-decoration:blink;">
+										Error: El Archivo no Pudo Ser Copiado!
+									</font>
+								</h3>
+							</div>';
+				}
+			} 		   
+}//fin del add        
+?>
+
+<div align="center" class="centermain">
+	<div class="main">  
+		<table class="admin_empresas">
+			<tr>
+				<th>
+					Empresa:
+					<small>
+						Nueva
+					</small>
+				</th>
+			</tr>
+		</table>
+        
+		<table class="adminform" border="0">
+			<tr bgcolor="#55baf3">
+				<th colspan="2">
+					Registro de una nueva Empresa
+				</th>
+			</tr>
+			
+			<tr>
+				<th colspan="2">
+					<font color="#ff0000">Los Campos con * son Obligatorios</font>
+				</th>
+			</tr>
+			
+			<?php 
+			if ((isset($_POST[save])) and ($error=="bien"))
+			{		
+			?> 
+			
+			<tr>
+				<td colspan="2" align="center">                        	
+					<br />
+					<strong>Resultado</strong>: 
+					<?php 
+					switch($resultado_insert)
+					{
+						case 0: 
+							echo 'No se pudo Procesar el Registro porque ya est&aacute; registrado en el sistema.';
+							break;
+						case 1: 
+							echo 'Registro Procesado con &eacute;xito';	
+							break;
+					}				
+					echo '<br />'.$msg;
+					?>
+					<br />	
+				</td>
+			</tr> 
+			
+			<table class="adminform" align="center">
+				<tr align="center">
+					<td width="100%" valign="top" align="center">
+						<div id="cpanel">
+							<div style="float:right;">
+								<div class="icon">
+									<a href="index2.php?type=empresa">
+										<img src="images/empresa.png" alt="salir" align="middle"  border="0" />
+										<span>Gestor de Datos</span>
+									</a>
+								</div>
+							</div>	
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+			<?php 
+			}
+			else
+			{
+			?> 
+			
+			<?php echo $error;?>
+	
+ 			<form method="POST" action="<?php echo $pagina?>" enctype="multipart/form-data">
+			<tr>
+				<td width="15%">
+					Rif de la Empresa:
+				</td>
+				
+				<td width="85%">
+					<input class="inputbox" type="text" id="rif_empresa" name="rif_empresa" maxlength="12" size="12"/>
+					<font color="#ff0000">*</font>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('rif_empresa');
+            		codigo.add(Validate.Presence);
+         		</script>
+				</td>                       
+			</tr>
+			
+			<tr>
+				<td>
+					Nombre de la Empresa:
+				</td>
+				
+				<td>
+					<input class="inputbox" type="text" id="nombre_empresa" name="nombre_empresa" maxlength="25" size="25"/>
+					<font color="#ff0000">*</font>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('nombre_empresa');
+            		codigo.add(Validate.Presence);
+         		</script>				
+				</td>			
+			</tr>
+			
+			<tr>
+				<td>
+					Nombre del Administrador:
+				</td>
+				
+				<td>
+					<input class="inputbox" type="text" id="nombre_administrador"  name="nombre_administrador" maxlength="25" size="25"/>
+					<font color="#ff0000">*</font>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('nombre_administrador');
+            		codigo.add(Validate.Presence);
+         		</script>
+				</td>			
+			</tr>
+			
+			<tr>
+				<td>
+					Ciudad:
+				</td>
+				
+				<td>
+					<input class="inputbox" type="text" id="ciudad" name="ciudad" maxlength="20" size="20"/>
+					<font color="#ff0000">*</font>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('ciudad');
+            		codigo.add(Validate.Presence);
+         		</script>				
+				</td>			
+			</tr>
+			
+			<tr>
+				<td>
+					Telefono de Oficina:
+				</td>
+				
+				<td>
+					<input class="inputbox" type="text" id="telefono_oficina" name="telefono_oficina" maxlength="12" size="12"/>
+					<font color="#ff0000">*</font>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('telefono_oficina');
+            		codigo.add(Validate.Presence);
+         		</script>	
+				</td>			
+			</tr>
+
+			<tr>
+				<td>
+					Telefono Fax:
+				</td>
+				
+				<td>			
+					<input class="inputbox" type="text" id="telefono_fax" name="telefono_fax" maxlength="12" size="12"/>
+				</td>			
+			</tr>
+
+			<tr>
+				<td>
+					Pagina Web:
+				</td>
+				
+				<td>			
+					<input class="inputbox" type="text" id="pagina_web" name="pagina_web" maxlength="30" size="30"/>
+				</td>			
+			</tr>
+
+			<tr>
+				<td>
+					Correo Electronico:
+				</td>
+				
+				<td>
+					<input class="inputbox" type="text" id="correo_electronico" name="correo_electronico" maxlength="30" size="30"/>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('correo_electronico');
+            		codigo.add( Validate.Email);
+         		</script>				
+				</td>			
+			</tr>
+			
+			<tr>
+				<td>
+					Logo de la Empresa:
+				</td>
+				
+				<td>
+					<input type="file" id="logo_empresa" name="logo_empresa" maxlength="30" size="30" class="inputbox">
+					<font size="1" color="#ff0000">(.jpg, m&aacute;ximo 100Kb)*</font>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('logo_empresa');
+            		codigo.add(Validate.Presence);
+         		</script>				
+				</td>			
+			</tr>
+			
+			<tr>
+				<td>
+					Direcci&oacute;n de la Empresa:
+				</td>
+				
+				<td>
+					<textarea class="inputbox" name="direccion_empresa" id="direccion_empresa" cols="70" rows="3"></textarea>
+					<font color="#ff0000">*</font>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('direccion_empresa');
+            		codigo.add(Validate.Presence);
+         		</script>				
+				</td>			
+			</tr>
+			
+			<tr>
+				<td bgcolor="#55baf3" colspan="2" align="center">
+					<input type="submit" class="button" name="save" value="  Guardar  " >
+					<input class="button" type="reset" value="Limpiar" name="Refresh"> 
+					<input  class="button" type="button" onClick="history.back()" value="Regresar">
+				</td>
+			</tr>
+		</table>
+		</form>
+			<?php 
+			}
+			?> 
+	</div>
+</div>

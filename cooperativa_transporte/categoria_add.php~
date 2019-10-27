@@ -1,0 +1,145 @@
+<?php
+
+if (isset($_GET['error'])) {
+    $error_accion_ms[0]= "La Categoria No puede ser Borrada.<br>Si desea borrarla, primero cree una nueva.";
+    $error_accion_ms[1]= "Datos incompletos.";
+    $error_accion_ms[4]= "La Categoira ya est&aacute; registrada.";
+    $error_cod = $_GET['error'];
+}
+
+    $redir=$_SERVER['HTTP_REFERER']; // Ruta para redireccionar a la pagina que nos llamo
+    $pag=$_SERVER['PHP_SELF'];  // el NOMBRE y ruta de esta misma p�ina.
+    $type=$_GET["view"];
+    $pagina=$pag.'?view='.$type;
+
+    //Conexion a la base de datos
+    $db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+?>
+	
+<?php 
+if (isset($_POST[save])) {
+    $descripcion = trim($_POST['descripcion']);
+
+    if (($nombre=="")) {
+        $error='<div align="left">
+                    <h3 class="error">
+                        <font color="red" style="text-decoration:blink;">
+                            Error: Datos Incompletos, por favor verifique los datos!
+                        </font>
+                    </h3>
+                </div>';
+    }
+    else {
+        require("conexion/aut_config.inc.php");
+        $db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");	
+			
+        $error="bien";	
+			
+        $inserta_registro = pg_query("insert into categorias (descripcion_categoria) values ('$descripcion')") or die(pg_last_error());		
+        $result_insert=pg_fetch_array($inserta_registro);	
+        pg_free_result($inserta_registro);
+        $resultado_insert=$result_insert[0];
+        pg_close();	
+        //exit;
+    }     
+}//fin del add        
+?>
+
+<div align="center" class="centermain">
+    <div class="main">  
+        <table class="admingrupos" width="100%">
+            <tr>
+                <th>
+                    Categoria:
+                    <small>
+                        Nueva
+                    </small>
+                </th>
+            </tr>
+        </table>
+        
+        <form method="POST" action="<?php echo $pagina?>" enctype="multipart/form-data">
+            <table class="adminform" border="0" width="100%">
+                <tr bgcolor="#55baf3">
+                    <th colspan="2">
+                        NUEVO REGISTRO A ALMACENAR
+                    </th>
+                </tr>
+
+                <?php 
+                    if ((isset($_POST[save])) and ($error=="bien")) {		
+                ?> 
+
+                <tr>
+                    <td colspan="2" align="center">                        	
+                        <br />
+                        <strong>Resultado</strong>: 
+                        <?php 
+                            switch($resultado_insert) {
+                                case 0: 
+                                    echo 'El Registro fue procesado con &eacute;xito';	
+                                    break;
+                                case 1: 
+                                    echo 'No se pudo procesar el registro porque ya est&aacute; registrado en el sistema ';
+                                    break;
+                            }				
+                            echo '<br />'.$msg;
+                        ?>
+                        <br />	
+                    </td>
+                </tr> 
+
+                <table class="adminform" align="center" width="100%">
+                    <tr align="center">
+                        <td width="100%" valign="top" align="center">
+                            <div id="cpanel">
+                                <div style="float:right;">
+                                    <div class="icon">
+                                        <a href="index2.php?view=categorias">
+                                            <img src="images/panel_inicio.png" alt="salir" align="middle"  border="0" />
+                                            <span>Gestor de Datos</span>
+                                        </a>
+                                    </div>
+                                </div>	
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <?php 
+                }
+                else
+                {
+                ?> 
+
+                <?php echo $error;?>
+
+                <tr>
+                    <td width="12%">
+                        Descrupci&oacute;n de la Categoria:
+                    </td>
+
+                    <td>
+                        <textarea name="descripcion" id="descripcion" cols="60" rows="2"></textarea>
+                        <script type="text/javascript">
+                            var codigo = new LiveValidation('descripcion');
+                            codigo.add(Validate.Presence);
+                            codigo.add( Validate.texto );
+                        </script>				
+                    </td>			
+                </tr>
+
+                <tr>
+                    <td bgcolor="#55baf3" colspan="2" align="center">
+                        <input type="submit" class="button" name="save" value="  Guardar  " >
+                        <input class="button" type="reset" value="Limpiar" name="Refresh"> 
+                        <input  class="button" type="button" onClick="history.back()" value="Regresar">
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <?php 
+        }
+        ?> 
+	</div>
+</div>

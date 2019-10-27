@@ -1,0 +1,172 @@
+<?php
+
+if (isset($_GET['error']))
+{
+	$error_accion_ms[0]= "La Empresa No puede ser Borrada.<br>Si desea borrarlo, primero cree uno nuevo.";
+	$error_accion_ms[1]= "Datos incompletos.";
+	$error_accion_ms[2]= "Contrase&ntilde;as no coinciden.";
+	$error_accion_ms[3]= "El Nivel de Acceso ha de ser num&eacute;rico.";
+	$error_accion_ms[4]= "El Usuario ya est&aacute; registrado.";
+	$error_accion_ms[5]= "Ya existe un usuario con el n&uacute;mero de c&eacute;dula que usted introdujo.";
+	$error_accion_ms[6]= "El n&uacute;mero de c&eacute;dula que usted introdujo no es v&aacute;lido.";
+	$error_cod = $_GET['error'];
+}
+
+	$redir=$_SERVER['HTTP_REFERER']; // Ruta para redireccionar a la pagina que nos llamo
+	$pag=$_SERVER['PHP_SELF'];  // el NOMBRE y ruta de esta misma p�ina.
+	$type=$_GET["type"];
+	$pagina=$pag.'?type='.$type;
+
+//Conexion a la base de datos
+$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+?>
+	
+<?php 
+if (isset($_POST[save]))
+{
+	$codigo = $_POST['codigo_nivel'];
+	$nombre = $_POST['nombre_nivel'];
+
+	if (($codigo=="") || ($nombre==""))
+	{
+			$error='<div align="left">
+							<h3 class="error">
+								<font color="red" style="text-decoration:blink;">
+									Error: Datos Incompletos, por favor verifique los datos!
+								</font>
+							</h3>
+						</div>';
+	}
+		else
+		{
+			require("conexion/aut_config.inc.php");
+			$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");	
+			
+			$error="bien";	
+			$passmd5=md5($password);
+			
+			$inserta_usuario = pg_query("SELECT insert_carrera($codigo,'$nombre')") or die("No se pudo insertar la carrera en la Base de datos");		
+			$result_insert=pg_fetch_array($inserta_usuario);	
+			pg_free_result($inserta_usuario);
+			$resultado_insert=$result_insert[0];
+			pg_close();	
+			//exit;
+		}     
+}//fin del add        
+?>
+
+<div align="center" class="centermain">
+	<div class="main">  
+		<table class="admin_niveles">
+			<tr>
+				<th>
+					Niveles de Usuarios:
+					<small>
+						Nuevo
+					</small>
+				</th>
+			</tr>
+		</table>
+        
+		<table class="adminform" border="0">
+			<tr bgcolor="#55baf3">
+				<th colspan="2">
+					Registro de un nuevo nivel de usuario
+				</th>
+			</tr>
+			
+			<?php 
+			if ((isset($_POST[save])) and ($error=="bien"))
+			{		
+			?> 
+			
+			<tr>
+				<td colspan="2" align="center">                        	
+					<br />
+					<strong>Resultado</strong>: 
+					<?php 
+					switch($resultado_insert)
+					{
+						case 0: 
+							echo 'No se pudo registrar el usuario porque ya est&aacute; registrado en el sistema ';
+							break;
+						case 1: 
+							echo 'Se Registro Un Nuevo Usuario del Sistema con &eacute;xito';	
+							break;
+					}				
+					echo '<br />'.$msg;
+					?>
+					<br />	
+				</td>
+			</tr> 
+			
+			<table class="adminform" align="center">
+				<tr align="center">
+					<td width="100%" valign="top" align="center">
+						<div id="cpanel">
+							<div style="float:right;">
+								<div class="icon">
+									<a href="index2.php?type=niveles_acceso">
+										<img src="images/niveles_acceso.png" alt="salir" align="middle"  border="0" />
+										<span>Gestor de Datos</span>
+									</a>
+								</div>
+							</div>	
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+			<?php 
+			}
+			else
+			{
+			?> 
+			
+			<?php echo $error;?>
+	
+ 			<form method="POST" action="<?php echo $pagina?>" enctype="multipart/form-data">
+			<tr>
+				<td width="15%">
+					C&oacute;digo:
+				</td>
+				
+				<td width="85%">
+					<input class="inputbox" type="text" id="codigo" name="codigo" maxlength="8" size="12"/>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('codigo');
+            		codigo.add(Validate.Presence);
+            		codigo.add( Validate.Numericality);
+         		</script>
+				</td>                       
+			</tr>
+			
+			<tr>
+				<td>
+					Nombres del Nivel:
+				</td>
+				
+				<td>
+					<input class="inputbox" type="text" id="nombre_nivel" name="nombre_nivel" maxlength="50" size="50"/>
+					<script type="text/javascript">
+         			var codigo = new LiveValidation('nombre_nivel');
+            		codigo.add(Validate.Presence);
+            		codigo.add( Validate.texto );
+         		</script>				
+				</td>			
+			</tr>
+		
+			<tr>
+				<td bgcolor="#55baf3" colspan="2" align="center">
+					<input type="submit" class="button" name="save" value="  Guardar  " >
+					<input class="button" type="reset" value="Limpiar" name="Refresh"> 
+					<input  class="button" type="button" onClick="history.back()" value="Regresar">
+				</td>
+			</tr>
+		</table>
+		</form>
+			<?php 
+			}
+			?> 
+	</div>
+</div>

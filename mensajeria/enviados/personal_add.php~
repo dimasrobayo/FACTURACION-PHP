@@ -1,0 +1,593 @@
+<?php
+	$redir=$_SERVER['HTTP_REFERER']; // Ruta para redireccionar a la pagina que nos llamo
+	$pag=$_SERVER['PHP_SELF'];  // el NOMBRE y ruta de esta misma p�ina.
+	$type=$_GET["type"];
+	$pagina=$pag.'?type='.$type;
+
+//Conexion a la base de datos
+$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+?>
+	
+<?php 
+if (isset($_POST[save]))
+{
+	$cedula_personal = $_POST['cedula_personal'];
+	$codigo_tipo_personal = $_POST['codigo_tipo_personal'];
+	$codigo_turno = $_POST['codigo_turno'];
+	$codigo_cargo = $_POST['codigo_cargo'];
+	$sueldo_cargo = $_POST['sueldo_cargo'];
+	$codigo_departamento = $_POST['codigo_departamento'];
+	$codigo_banco = $_POST['codigo_banco'];
+	$nombre_personal = $_POST['nombre_personal'];
+	$apellido_personal = $_POST['apellido_personal'];
+	$fecha_ingreso = $_POST['fecha_ingreso'];
+	$n_cuenta = $_POST['n_cuenta'];
+	$fecha_nacimiento = $_POST['fecha_nacimiento'];
+	$ubicacion = $_POST['ubicacion'];
+	$telefono_fijo = $_POST['telefono_fijo'];
+	$telefono_movil = $_POST['telefono_movil'];
+	$direccion_personal = $_POST['direccion_personal'];
+	$sexo = $_POST['sexo'];
+	$estado_civil = $_POST['estado_civil'];
+	
+ 
+	//aqui es para los logos de la empresa
+	$foto_persona = $_POST['cedula_personal'];
+	$foto = $foto_persona;
+	
+	$foto_name = $HTTP_POST_FILES['foto_personal']['name'];
+	$tipo_archivo = $HTTP_POST_FILES['foto_personal']['type'];
+	$tamano_archivo = $HTTP_POST_FILES['foto_personal']['size']; 
+
+	if (($cedula_personal=="")  || ($nombre_personal==""))
+	{
+			$error='<div align="left">
+							<h3 class="error">
+								<font color="red" style="text-decoration:blink;">
+									Error: Datos Incompletos,  Intente Nuevamente!
+								</font>
+							</h3>
+						</div>';
+	}
+		else
+		{
+			// guardamos el archivo a la carpeta files
+			$destino =  "fotos/".$foto;
+			if (copy($_FILES['foto_personal']['tmp_name'],$destino)) 
+				{
+					$status = "Archivo subido: <b>".$foto_name."</b>";
+					
+					require("conexion/aut_config.inc.php");
+					$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");	
+		
+					$error="bien";	
+					
+					$inserta_usuario = pg_query("insert into personal (cedula_personal,codigo_tipo_personal,codigo_turno,codigo_cargo,codigo_departamento,codigo_banco,nombre_personal,apellido_personal,fecha_ingreso,n_cuenta,fecha_nacimiento,ubicacion,telefono_fijo,telefono_movil,direccion_personal,sexo,estado_civil,foto) values ($cedula_personal,$codigo_tipo_personal,$codigo_turno,$codigo_cargo,$codigo_departamento,$codigo_banco,'$nombre_personal','$apellido_personal','$fecha_ingreso','$n_cuenta','$fecha_nacimiento','$ubicacion','$telefono_fijo','$telefono_movil','$direccion_personal','$sexo','$estado_civil','$foto')")  or die('La consulta fall&oacute;: ' . pg_last_error());	
+					$result_insert=pg_fetch_array($inserta_usuario);	
+					pg_free_result($inserta_usuario);
+					$resultado_insert=$result_insert[0];
+					
+					//aqui es la carga automatica de los conceptos
+					$carga_automatica=pg_query("select * from concepto where condicion = 1") or die("No se pudo realizar la consulta a la Base de datos");
+
+					//inicio del siclo para la incluir los conceptos de carga automatica al personal
+					while($resultados_concepto = pg_fetch_array($carga_automatica))
+					{
+						//encapsulamos los valores para posteriormente pasar a incluir los conceptos automaticos
+						$cedula_personal;
+						$codigo_concepto = $resultados_concepto['codigo_concepto'];
+						$codigo_presupuestario = $resultados_concepto['presupuesto'];
+						echo $porc = $resultados_concepto['porcentaje'];
+						$base_calculo = $resultados_concepto['base_calculo'];
+						$monto_ini = $resultados_concepto['monto'];						
+						$condicion = "F";
+						$cantidad = "1";
+						$descena=100;	
+		
+						if($codigo_presupuestario=='4.01.01.01.00'){
+							$monto = $sueldo_cargo;
+						}
+						
+						elseif(($monto_ini==0)||($base_calculo=="SB")){
+							$monto = ((($monto_ini) * ($porc))/$descena);								
+						}
+						
+						elseif(($monto_ini==0)||($base_calculo=="SI")){
+							$consulta_si = pg_query("SELECT SUM(monto) FROM concepto where condicion=1 and presupuesto <> '4.01.01.01.00'");
+							echo $sueldo_integral = ($monto_ini+$consulta_si);
+							$monto=(($sueldo_integral*$porc)/$descena);								
+						}
+							
+						elseif($porc==0) {	
+						$monto = $monto_ini;								
+						}
+						
+						$insertar_concepto = pg_query("insert into detalle_personal (cedula_personal, codigo_concepto, cantidad, monto, condicion) values ($cedula_personal, $codigo_concepto, '$cantidad', '$monto', '$condicion')")  or die('La consulta fall&oacute;: ' . pg_last_error());	
+						$result_insert=pg_fetch_array($insertar_concepto);	
+						pg_free_result($insertar_concepto);
+						$resultado_insert=$result_insert[0];
+					}
+					pg_close();	
+				} 
+				else 
+				{
+					$error = '<div align="left">
+								<h3 class="error">
+									<font color="red" style="text-decoration:blink;">
+										Error: El Archivo no Pudo Ser Copiado!
+									</font>
+								</h3>
+							</div>';
+				}    
+		}     
+}//fin del add   
+?>
+<div align="center" class="centermain">
+	<div class="main">  
+		<table class="admin_personal">
+			<tr>
+				<th>
+					Personal:
+					<small>
+						Nuevo
+					</small>
+				</th>
+			</tr>
+		</table>
+        
+		<table class="adminform" border="0">
+			<tr bgcolor="#55baf3">
+				<th colspan="2">
+					NUEVO REGISTRO A ALMACENAR
+				</th>
+			</tr>
+			
+			<?php 
+			if ((isset($_POST[save])) and ($error=="bien"))
+			{		
+			?> 
+			
+			<tr>
+				<td colspan="2" align="center">                        	
+					<br />
+					<strong>Resultado</strong>: 
+					<?php 
+					switch($resultado_insert)
+					{
+						case 0: 
+							echo 'El Registro fue procesado con &eacute;xito';	
+							break;
+						case 1: 
+							echo 'No se pudo procesar el registro porque ya est&aacute; registrado en el sistema ';
+							break;
+					}				
+					echo '<br />'.$msg;
+					?>
+					<br />	
+				</td>
+			</tr> 
+			
+			<table class="adminform" align="center">
+				<tr align="center">
+					<td width="100%" valign="top" align="center">
+						<div id="cpanel">
+							<div style="float:right;">
+								<div class="icon">
+									<a href="index2.php?type=personal">
+										<img src="images/personal.png" alt="salir" align="middle"  border="0" />
+										<span>Gestor de Datos</span>
+									</a>
+								</div>
+							</div>	
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+			<?php 
+			}
+			else
+			{
+			?> 
+			
+			<?php echo $error;?>
+ 		<form id="personal_add" name="personal_add" method="POST" action="<?php echo $pagina?>" enctype="multipart/form-data">
+			<tr>
+				<td>
+					<ul id="divsG" name="divsG" class="shadetabs">
+						<li><a class="selected" href="javascript:void(0);" rel="divG0" >Datos Personales</a></li>
+						<li><a href="javascript:void(0);" rel="divG1">Datos de Empleo</a></li>							
+					</ul>
+					<div style="border:1px solid gray;  margin-bottom: 3px; padding: 7px">
+
+
+ 			<div style="display: block;" id="divG0" class="tabcontent" name="divG0">		
+	 			<table class="borded" border="0" cellpadding="0" cellspacing="1" width="100%">
+				<tbody>						
+					<tr width="15%">
+						<td>
+							Cedula de Identidad:
+						</td>
+						
+						<td width="85%">
+							<input class="inputbox" type="text" id="cedula_personal" name="cedula_personal" maxlength="15" size="15"/>
+							<font color="#ff0000">*</font>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('cedula_personal');
+		         			codigo.add(Validate.Presence);
+		            		codigo.add( Validate.Numericality);
+		         		</script>
+						</td>			
+					</tr>
+					
+					<tr>
+						<td width="12%">
+							Nombres:
+						</td>
+						
+						<td>
+							<input class="inputbox" type="text" id="nombre_personal" name="nombre_personal" maxlength="40" size="40"/>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('nombre_personal');
+		            		codigo.add(Validate.Presence);
+		            		codigo.add( Validate.texto );
+		         		</script>
+		         		<font color="#ff0000">*</font>		
+						</td>			
+					</tr>
+					
+					<tr>
+						<td width="12%">
+							Apellidos:
+						</td>
+						
+						<td>
+							<input class="inputbox" type="text" id="apellido_personal" name="apellido_personal" maxlength="40" size="40"/>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('apellido_personal');
+		            		codigo.add(Validate.Presence);
+		            		codigo.add( Validate.texto );
+		         		</script>	
+		         		<font color="#ff0000">*</font>			
+						</td>			
+					</tr>
+					
+					<tr>
+						<td >
+							Fecha de Nacimiento:
+						</td>	
+									
+						<td>
+							<input id="fecha_nacimiento" type="text" value="" readonly name="fecha_nacimiento" size="10">
+							<input type="button" value="Cal" onclick="displayCalendar(document.forms[0].fecha_nacimiento,'dd/mm/yyyy',this)">
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('fecha_nacimiento');
+		            		codigo.add(Validate.Presence);
+		         		</script>
+							<font color="Red">
+								(*)
+							</font>
+						</td>                      
+					</tr>
+					
+					<tr width="15%">
+						<td>
+							Telefono Fijo:
+						</td>
+						
+						<td width="85%">
+							<input class="inputbox" type="text" id="telefono_fijo" name="telefono_fijo" maxlength="11" size="15"/>
+							<font color="#ff0000">*</font>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('telefono_fijo');
+		         			codigo.add(Validate.Presence);
+		            		codigo.add( Validate.Numericality);
+		         		</script>
+						</td>			
+					</tr>
+					
+					<tr width="15%">
+						<td>
+							Telefono Movil:
+						</td>
+						
+						<td width="85%">
+							<input class="inputbox" type="text" id="telefono_movil" name="telefono_movil" maxlength="11" size="15"/>
+							<font color="#ff0000">*</font>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('telefono_movil');
+		            		codigo.add( Validate.Numericality);
+		         		</script>
+						</td>			
+					</tr>
+					
+					<tr>
+						<td width="12%">
+							Sexo del Trabajor:
+						</td>
+						
+						<td>
+							<select id="sexo" name="sexo" size="0" class="options">
+								<option value="">----</option>	        
+								<option value="femenino">Femenino</option>
+								<option value="masculino">Masculino</option>
+							</select>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('sexo');
+		            		codigo.add(Validate.Presence);
+		            		codigo.add( Validate.texto );
+		         		</script>	
+		         		<font color="#ff0000">*</font>			
+						</td>			
+					</tr>
+					
+					<tr>
+						<td width="12%">
+							Estado Civil:
+						</td>
+						
+						<td>
+							<select id="estado_civil" name="estado_civil" size="0" class="options">
+								<option value="">----</option>	        
+								<option value="Soltero">Soltero</option>
+								<option value="Casado">Casado</option>
+								<option value="Divorciado">Divorciado</option>
+								<option value="Concubina">Concubina</option>
+							</select>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('estado_civil');
+		            		codigo.add(Validate.Presence);
+		            		codigo.add( Validate.texto );
+		         		</script>	
+		         		<font color="#ff0000">*</font>			
+						</td>			
+					</tr>
+					
+					<tr>
+						<td width="12%">
+							Direcci&oacute;n:
+						</td>
+						
+						<td>
+							<textarea name="direccion_personal" id="direccion_personal" cols="60" rows="2"></textarea>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('direccion_personal');
+		            		codigo.add(Validate.Presence);
+		            		codigo.add( Validate.texto );
+		         		</script>
+		         		<font color="#ff0000">*</font>				
+						</td>			
+					</tr>
+					
+					<tr>
+						<td>
+							Fotos del Personal:
+						</td>
+						
+						<td>
+							<input type="file" id="foto_personal" name="foto_personal" maxlength="30" size="30" class="inputbox">
+							<font size="1" color="#ff0000">(.jpg, m&aacute;ximo 50Kb)*</font>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('foto_personal');
+		            		codigo.add(Validate.Presence);
+		         		</script>				
+						</td>			
+					</tr>
+				</tbody>
+				</table>	
+			</div>			
+
+			<div style="display: block;" id="divG1" class="tabcontent">
+	 			<table class="borded" border="0" cellpadding="0" cellspacing="1" width="100%">
+				<tbody>						
+					<tr>
+						<td width="12%">
+							Tipo de Personal:
+						</td>
+						
+						<td>
+							<select id="codigo_tipo_personal" name="codigo_tipo_personal" size="0" class="options">
+								<option value="">----</option>	        
+								<?php
+									$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+				
+									$consulta=pg_query("select * from tipo_personal order by nombre_tipo_personal");
+									while ($array_consulta=pg_fetch_array($consulta))
+									{
+										echo '<option value="'.$array_consulta[0].'">'.$array_consulta[1].'</option>';
+									}
+									pg_free_result($consulta);
+								?>
+							</select>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('codigo_tipo_personal');
+		            		codigo.add(Validate.Presence);
+		            		codigo.add( Validate.texto );
+		         		</script>
+		         		<font color="#ff0000">*</font>				
+						</td>			
+					</tr>
+					
+					<tr>
+						<td width="12%">
+							Turno de Trabajo:
+						</td>
+						
+						<td>
+							<select id="codigo_turno" name="codigo_turno" size="0" class="options">
+								<option value="">----</option>	        
+								<?php
+									$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+				
+									$consulta=pg_query("select * from turno order by nombre_turno");
+									while ($array_consulta=pg_fetch_array($consulta))
+									{
+										echo '<option value="'.$array_consulta[0].'">'.$array_consulta[1].'</option>';
+									}
+									pg_free_result($consulta);
+								?>
+							</select>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('codigo_turno');
+		            		codigo.add(Validate.Presence);
+		            		codigo.add( Validate.texto );
+		         		</script>
+		         		<font color="#ff0000">*</font>				
+						</td>			
+					</tr>
+
+					<tr id="periodo">
+						<td>
+							Cargo del Personal:
+						</td>
+						
+						<td>
+							<input type="text" id="codigo_cargo" class="inputbox" name="codigo_cargo" readonly="true" maxlength="15" size="15"/>
+							<img src="images/ver.png" width="16" height="16" onClick="ventanacargo()" onMouseOver="style.cursor=cursor">
+							<br>  
+							<textarea id="nombre_cargo" name="nombre_cargo" readonly="true" cols="60" rows="2"></textarea>
+							<input type="hidden" id="sueldo_cargo" name="sueldo_cargo" readonly="true" maxlength="15" size="15"/>
+							<script type="text/javascript">
+				   			var codigo = new LiveValidation('nombre_cargo');
+				      		codigo.add(Validate.Presence);
+				      		codigo.add( Validate.texto );
+				   		</script>
+				   		<font color="Red">
+								(*)
+							</font>				
+						</td>			
+					</tr>	
+					
+					<tr>
+						<td width="12%">
+							Departamento:
+						</td>
+						
+						<td>
+							<select id="codigo_departamento" name="codigo_departamento" size="0" class="options">
+								<option value="">----</option>	        
+								<?php
+									$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+				
+									$consulta=pg_query("select * from departamento order by nombre_departamento");
+									while ($array_consulta=pg_fetch_array($consulta))
+									{
+										echo '<option value="'.$array_consulta[0].'">'.$array_consulta[1].'</option>';
+									}
+									pg_free_result($consulta);
+								?>
+							</select>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('codigo_departamento');
+		            		codigo.add(Validate.Presence);
+		            		codigo.add( Validate.texto );
+		         		</script>
+		         		<font color="#ff0000">*</font>				
+						</td>			
+					</tr>
+					
+					<tr>
+						<td >
+							Fecha de Ingreso:
+						</td>	
+									
+						<td>
+							<input id="fecha_ingreso" type="text" value="" readonly name="fecha_ingreso" size="10">
+							<input type="button" value="Cal" onclick="displayCalendar(document.forms[0].fecha_ingreso,'dd/mm/yyyy',this)">
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('fecha_ingreso');
+		            		codigo.add(Validate.Presence);
+		         		</script>
+							<font color="Red">
+								(*)
+							</font>
+						</td>                      
+					</tr>
+					
+					<tr>
+						<td width="12%">
+							Entidad Bancaria:
+						</td>
+						
+						<td>
+							<select id="codigo_banco" name="codigo_banco" size="0" class="options">
+								<option value="">----</option>	        
+								<?php
+									$db_conexion=pg_connect("host=$sql_host dbname=$sql_db user=$sql_usuario password=$sql_pass");
+				
+									$consulta=pg_query("select * from banco order by nombre_banco");
+									while ($array_consulta=pg_fetch_array($consulta))
+									{
+										echo '<option value="'.$array_consulta[0].'">'.$array_consulta[1].'</option>';
+									}
+									pg_free_result($consulta);
+								?>
+							</select>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('tipo');
+		            		codigo.add(Validate.Presence);
+		            		codigo.add( Validate.texto );
+		         		</script>	
+		         		<font color="#ff0000">*</font>			
+						</td>			
+					</tr>
+					
+					<tr width="15%">
+						<td>
+							N° de Cuenta:
+						</td>
+						
+						<td width="85%">
+							<input class="inputbox" type="text" id="n_cuenta" name="n_cuenta" maxlength="20" size="30"/>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('n_cuenta');
+		            		codigo.add(Validate.Presence);
+		            		codigo.add( Validate.Numericality);
+		         		</script>	
+		         		<font color="#ff0000">*</font>		
+						</td>			
+					</tr>	
+					
+					<tr>
+						<td width="12%">
+							Ubicaci&oacute;n:
+						</td>
+						
+						<td>
+							<textarea name="ubicacion" id="ubicacion" cols="60" rows="2"></textarea>
+							<script type="text/javascript">
+		         			var codigo = new LiveValidation('ubicacion');
+		            		codigo.add(Validate.Presence);
+		            		codigo.add( Validate.texto );
+		         		</script>
+		         		<font color="#ff0000">*</font>				
+						</td>			
+					</tr>						
+				</tbody>
+				</table>	
+			</div>						
+			</div>
+			
+				</td>
+			</tr>	
+								
+			<tr>
+				<td bgcolor="#55baf3" colspan="2" align="center">
+					<input type="submit" class="button" name="save" value="  Guardar  " >
+					<input class="button" type="reset" value="Limpiar" name="Refresh"> 
+					<input  class="button" type="button" onClick="history.back()" value="Regresar">
+				</td>
+			</tr>
+		</form>
+			<?php 
+			}
+			?> 
+	</div>
+</div>
+
+<script type="text/javascript">
+	var dtabs=new ddtabcontent("divsG")
+	dtabs.setpersist(true)
+	dtabs.setselectedClassTarget("link") //"link" or "linkparent"
+	dtabs.init()
+</script>
